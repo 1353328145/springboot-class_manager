@@ -1,0 +1,8 @@
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    url: jdbc:mysql://cjxing.fun:16033/class_manager?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: MiMaShi123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
