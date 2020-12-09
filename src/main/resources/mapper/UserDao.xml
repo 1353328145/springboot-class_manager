@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jexing.classmanager.dao.UserDao">
+
+    <resultMap type="com.jexing.classmanager.entity.User" id="UserMap">
+        <id property="id" column="id"/>
+        <result property="name" column="NAME"/>
+        <result property="sno" column="sno" />
+        <result property="password" column="PASSWORD"/>
+        <result property="stars" column="stars" />
+        <result property="pn" column="pn" />
+        <result property="gender" column="gender" />
+        <result property="email" column="email" />
+        <result property="rankId" column="rank_id"/>
+        <result property="photo" column="photo"/>
+        <association property="rank" column="rankId" javaType="com.jexing.classmanager.entity.Rank"
+                     select="com.jexing.classmanager.dao.RankDao.queryById" fetchType="lazy"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select id,
+               NAME,
+               sno,
+               PASSWORD,
+               stars,
+               pn,
+               gender,
+               email,
+               rank_id,
+               photo
+        from class_manager.user
+        where id = #{id}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserMap">
+        select
+        id, NAME, sno, PASSWORD, stars, pn, gender, email, rank_id, photo
+        from class_manager.user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and NAME = #{name}
+            </if>
+            <if test="sno != null and sno != ''">
+                and sno = #{sno}
+            </if>
+            <if test="password != null and password != ''">
+                and PASSWORD = #{password}
+            </if>
+            <if test="stars != null">
+                and stars = #{stars}
+            </if>
+            <if test="pn != null and pn != ''">
+                and pn = #{pn}
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="rankId != null">
+                and rank_id = #{rankId}
+            </if>
+            <if test="photo != null and photo != ''">
+                and photo = #{photo}
+            </if>
+        </where>
+    </select>
+    <select id="queryByName" resultMap="UserMap">
+        select * from user where name = #{name}
+    </select>
+    <select id="queryIdByName" resultType="java.lang.Integer">
+        select id from user where name = #{name}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into class_manager.user(NAME, sno, PASSWORD, stars, pn, gender, email, rank_id, photo)
+        values (#{name}, #{sno}, #{password}, #{stars}, #{pn}, #{gender}, #{email}, #{rankId}, #{photo})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update class_manager.user
+        <set>
+            <if test="name != null and name != ''">
+                NAME = #{name},
+            </if>
+            <if test="sno != null and sno != ''">
+                sno = #{sno},
+            </if>
+            <if test="password != null and password != ''">
+                PASSWORD = #{password},
+            </if>
+            <if test="stars != null">
+                stars = #{stars},
+            </if>
+            <if test="pn != null and pn != ''">
+                pn = #{pn},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="rankId != null">
+                rank_id = #{rankId},
+            </if>
+            <if test="photo != null and photo != ''">
+                photo = #{photo},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from class_manager.user
+        where id = #{id}
+    </delete>
+
+</mapper>

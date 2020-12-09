@@ -26,14 +26,15 @@ public class ShiroConfig {
         //设置受限资源
         Map<String,String> map=new HashMap<>();
         //   /**表示出了login以外的资源全部受限
-        map.put("/authority/login","anon"); //这个资源不需要认证
-        map.put("/authority/register","anon"); //这个资源不需要认证
-//        map.put("/js/**","anon"); //这个资源不需要认证
-//        map.put("/register.jsp","anon");
-//        map.put("/user/register","anon");
-//        map.put("/index.jsp","authc");//authc请这个资源需要认证和授权
-        //默认认证的界面路径 不写默认访问login.jsp做认证
-        shiroFilterFactoryBean.setLoginUrl("login.jsp");
+        map.put("/user/login","anon"); //这个资源不需要认证
+        map.put("/user/register","anon"); //这个资源不需要认证
+        map.put("/login","anon"); //这个资源不需要认证
+        map.put("/css/**","anon");
+        map.put("/lay/**","anon");
+        map.put("/font/**","anon");
+        map.put("/layui.js","anon");
+        map.put("/**","authc");
+        shiroFilterFactoryBean.setLoginUrl("login");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         return shiroFilterFactoryBean;
     }
@@ -54,21 +55,5 @@ public class ShiroConfig {
         credentialsMatcher.setHashAlgorithmName("MD5");//设置算法
         customerRealm.setCredentialsMatcher(credentialsMatcher);
         return customerRealm;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Bean
-    public FilterRegistrationBean corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Collections.singletonList(CorsConfiguration.ALL));
-        corsConfiguration.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
-        corsConfiguration.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
-        corsConfiguration.addExposedHeader("Authorization");
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
     }
 }

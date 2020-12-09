@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jexing.classmanager.dao.LogDao">
+
+    <resultMap type="com.jexing.classmanager.entity.Log" id="LogMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="info" column="info" jdbcType="VARCHAR"/>
+        <result property="flag" column="flag" jdbcType="OTHER"/>
+        <result property="val" column="val" jdbcType="INTEGER"/>
+        <result property="fromId" column="from_id" jdbcType="INTEGER"/>
+        <result property="toId" column="to_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="LogMap">
+        select id,
+               info,
+               flag,
+               val,
+               from_id,
+               to_id,
+               create_time
+        from class_manager.log
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="LogMap">
+        select id,
+               info,
+               flag,
+               val,
+               from_id,
+               to_id,
+               create_time
+        from class_manager.log
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="LogMap">
+        select
+        id, info, flag, val, from_id, to_id, create_time
+        from class_manager.log
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="info != null and info != ''">
+                and info = #{info}
+            </if>
+            <if test="flag != null">
+                and flag = #{flag}
+            </if>
+            <if test="val != null">
+                and val = #{val}
+            </if>
+            <if test="fromId != null">
+                and from_id = #{fromId}
+            </if>
+            <if test="toId != null">
+                and to_id = #{toId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into class_manager.log(info, flag, val, from_id, to_id, create_time)
+        values (#{info}, #{flag}, #{val}, #{fromId}, #{toId}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update class_manager.log
+        <set>
+            <if test="info != null and info != ''">
+                info = #{info},
+            </if>
+            <if test="flag != null">
+                flag = #{flag},
+            </if>
+            <if test="val != null">
+                val = #{val},
+            </if>
+            <if test="fromId != null">
+                from_id = #{fromId},
+            </if>
+            <if test="toId != null">
+                to_id = #{toId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from class_manager.log
+        where id = #{id}
+    </delete>
+
+</mapper>

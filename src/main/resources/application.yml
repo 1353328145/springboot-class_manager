@@ -1,8 +1,15 @@
 spring:
   thymeleaf:
     cache: false
+    prefix: classpath:/templates/
   datasource:
     url: jdbc:mysql://cjxing.fun:16033/class_manager?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: root
     password: MiMaShi123456
+    type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+#mybatis配置
+mybatis:
+  typeAliasesPackage: com.jexing.classmanager.entity
+  mapperLocations: classpath:mapper/*.xml
