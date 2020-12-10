@@ -1,6 +1,7 @@
 package com.jexing.classmanager.controller;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,4 +31,8 @@ public class RoterController {
     public String register(){
         return "register";
     }
+
+    @RequestMapping("stars")
+    @RequiresRoles("admin")
+    public String stars(){return "page/stars";}
 }

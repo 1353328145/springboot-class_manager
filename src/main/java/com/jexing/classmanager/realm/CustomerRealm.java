@@ -22,6 +22,7 @@ public class CustomerRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         User current = userService.getUserByName((String) principalCollection.getPrimaryPrincipal());
         SimpleAuthorizationInfo simpleAuthenticationInfo = new SimpleAuthorizationInfo();
+        System.out.println("用户授权"+current);
         if (current==null){
             return null;
         }else{
@@ -39,7 +40,6 @@ public class CustomerRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         User currentUser = userService.getUserByName((String) authenticationToken.getPrincipal());
-        System.out.println(currentUser);
         if (currentUser==null){//用户不存在登陆失败
             return null;
         }else{

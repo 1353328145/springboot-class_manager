@@ -78,4 +78,9 @@ public class UserServiceImpl implements UserService {
     public int queryIdByName(String name) {
         return userDao.queryIdByName(name);
     }
+
+    @Override
+    public int getCount() {
+        return userDao.queryCount();
+    }
 }

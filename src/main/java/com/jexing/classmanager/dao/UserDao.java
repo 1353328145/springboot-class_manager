@@ -60,4 +60,5 @@ public interface UserDao {
      */
     int queryIdByName(String name);
 
+    int queryCount();
 }

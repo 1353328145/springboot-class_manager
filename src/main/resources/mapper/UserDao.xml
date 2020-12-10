@@ -9,11 +9,15 @@
         <result property="password" column="PASSWORD"/>
         <result property="stars" column="stars" />
         <result property="pn" column="pn" />
-        <result property="gender" column="gender" />
+        <result property="rankId" column="rank_id"/>
+        <result property="gender" column="gender"/>
         <result property="email" column="email" />
         <result property="rankId" column="rank_id"/>
-        <association property="rank" column="rankId" javaType="com.jexing.classmanager.entity.Rank"
-                     select="com.jexing.classmanager.dao.RankDao.queryById" fetchType="lazy"/>
+        <association property="rank"  javaType="com.jexing.classmanager.entity.Rank">
+            <id property="id" column="id"/>
+            <result property="rank" column="rank" />
+            <result property="info" column="info" />
+        </association>
     </resultMap>
 
     <!--查询单个-->
@@ -67,10 +71,13 @@
         </where>
     </select>
     <select id="queryByName" resultMap="UserMap">
-        select * from user where name = #{name}
+        select * from user u,rank r where name = #{name} and u.rank_id = r.id
     </select>
     <select id="queryIdByName" resultType="java.lang.Integer">
         select id from user where name = #{name}
+    </select>
+    <select id="queryCount" resultType="java.lang.Integer">
+        select count(*) from user
     </select>
 
     <!--新增所有列-->

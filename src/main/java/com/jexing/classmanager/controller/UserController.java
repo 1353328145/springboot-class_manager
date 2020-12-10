@@ -64,10 +64,20 @@ public class UserController {
         return insert >0?Msg.success():Msg.fail();
     }
 
+    /**
+     * 用户名获取
+     * @param id
+     * @return
+     */
     @GetMapping("getById/{id}")
     public Msg getById(@PathVariable("id") Integer id){
         User data = userService.queryById(id);
-        System.out.println(data);
         return Msg.success().add("user", data);
+    }
+
+
+    @GetMapping("getConut")
+    public Msg getCount(){
+        return Msg.success().add("count",userService.getCount());
     }
 }

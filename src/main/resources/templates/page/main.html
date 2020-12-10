@@ -2,9 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>主页</title>
+    <link rel="stylesheet" href="../../css/layui.css">
+
 </head>
 <body>
-        我是主页
+<div class="layui-card">
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-md3">
+                <div style="">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script src="../../layui.js"></script>
+<script>
+    let element;
+    let layer;
+    let user;
+    let $;
+    layui.use(['element','layer','jquery'], function(){
+        element = layui.element;
+        layer= layui.layer;
+        $ = layui.jquery;
+        $.ajax({
+            method:'get',
+            url:'user/getById/'+window.sessionStorage.getItem("uid"),
+            success:function (data){
+                user=data.data.user;
+                $("#name").text(user.name);
+                $("#photo").attr("src",'img/man.jpg')
+            }
+        })
+    });
+</script>
+<style>
+</style>
 </html>

@@ -56,4 +56,6 @@ public interface UserService {
      * @return
      */
     int queryIdByName(String name);
+
+    int getCount();
 }
