@@ -1,5 +1,7 @@
 package com.jexing.classmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
 /**
@@ -7,8 +9,8 @@ import java.io.Serializable;
  *
  * @since 2020-12-09 12:49:55
  */
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 public class User implements Serializable {
-    private static final long serialVersionUID = 190036985338698650L;
 
     private Integer id;
 
@@ -27,8 +29,6 @@ public class User implements Serializable {
     private String email;
 
     private Integer rankId;
-
-    private String photo;
 
     private Rank rank;
 
@@ -112,13 +112,6 @@ public class User implements Serializable {
         this.rankId = rankId;
     }
 
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
 
     @Override
     public String toString() {
@@ -132,7 +125,6 @@ public class User implements Serializable {
                 ", gender=" + gender +
                 ", email='" + email + '\'' +
                 ", rankId=" + rankId +
-                ", photo='" + photo + '\'' +
                 ", rank=" + rank +
                 '}';
     }

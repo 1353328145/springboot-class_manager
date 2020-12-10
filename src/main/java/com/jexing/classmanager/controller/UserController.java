@@ -54,4 +54,20 @@ public class UserController {
         }
         return Msg.success().add("uid", userService.queryIdByName(name));
     }
+
+    /**
+     * 注册
+     */
+    @PostMapping("register")
+    public Msg register(User user){
+        int insert = userService.insert(user);
+        return insert >0?Msg.success():Msg.fail();
+    }
+
+    @GetMapping("getById/{id}")
+    public Msg getById(@PathVariable("id") Integer id){
+        User data = userService.queryById(id);
+        System.out.println(data);
+        return Msg.success().add("user", data);
+    }
 }

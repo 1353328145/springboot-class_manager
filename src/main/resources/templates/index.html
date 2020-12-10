@@ -21,8 +21,8 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    张三
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img" id="photo">
+                    <span id="name">张三</span>
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="">修改个人资料</a></dd>
@@ -59,8 +59,23 @@
 </div>
 <script src="../layui.js"></script>
 <script>
-    layui.use(['element','layer'], function(){
-        let element = layui.element;
+    let element;
+    let layer;
+    let user;
+    let $;
+    layui.use(['element','layer','jquery'], function(){
+        element = layui.element;
+        layer= layui.layer;
+        $ = layui.jquery;
+        $.ajax({
+            method:'get',
+            url:'user/getById/'+window.sessionStorage.getItem("uid"),
+            success:function (data){
+                user=data.data.user;
+                $("#name").text(user.name);
+                $("#photo").attr("src",'img/man.jpg')
+            }
+        })
     });
 </script>
 </body>

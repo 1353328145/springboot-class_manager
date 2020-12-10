@@ -3,6 +3,7 @@ package com.jexing.classmanager.service.impl;
 import com.jexing.classmanager.dao.UserDao;
 import com.jexing.classmanager.entity.User;
 import com.jexing.classmanager.service.UserService;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +38,12 @@ public class UserServiceImpl implements UserService {
      * @return 实例对象
      */
     @Override
-    public User insert(User user) {
-        this.userDao.insert(user);
-        return user;
+    public int insert(User user) {
+        if (userDao.queryByName(user.getName())!=null){
+            return -1;
+        }
+        user.setPassword(new Md5Hash(user.getPassword()).toHex());
+        return this.userDao.insert(user);
     }
 
     /**

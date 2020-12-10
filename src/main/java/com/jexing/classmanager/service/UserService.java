@@ -25,7 +25,7 @@ public interface UserService {
      * @param user 实例对象
      * @return 实例对象
      */
-    User insert(User user);
+    int insert(User user);
 
     /**
      * 修改数据

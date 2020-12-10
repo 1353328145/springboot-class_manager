@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="../css/layui.css" media="all">
+
+</head>
+<body>
+    <div class="layui-container">
+        <div class="layui-row" style="margin-top: 10px">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline">
+                    <input type="text" required  lay-verify="required" name="name"
+                               placeholder="请输入标题" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">用户名3-15个字符且唯一</div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" required lay-verify="required" name="password"
+                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">密码3-15个字符</div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">确认密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" required lay-verify="required" name="re_password"
+                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">密码3-15个字符</div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" required lay-verify="required" name="sno"
+                               placeholder="请输入学号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-inline">
+                        <input type="email" required lay-verify="required" name="email"
+                               placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text" required lay-verify="required" name="pn"
+                               placeholder="请输入电话" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单选框</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name = "gender" value="1" title="男" checked>
+                        <input type="radio" name = "gender" value="0" title="女" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="register">立即提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="../layui.js" charset="utf-8"></script>
+<script>
+    let form;
+    let layer;
+    let $;
+    layui.use(['form','jquery','layer'], function () {
+        form = layui.form;
+        layer= layui.layer;
+        $ = layui.jquery;
+
+        form.on('submit(register)', function(data){
+            let ret=data.field;
+            if (ret.password!==ret.re_password){
+                layer.msg("新旧密码不一致")
+            }else if (ret.name.length<3||ret.name.length>15){
+                layer.msg("用户名长度不符合要求")
+            }else if (ret.password.length<3||ret.password.length>15){
+                layer.msg("密码长度不符合要求")
+            } else if (ret.re_password.length<3||ret.re_password.length>15){
+                layer.msg("密码长度不符合要求")
+            } else if (ret.sno.length<8||ret.sno.length>15){
+                layer.msg("请输入正确的学号")
+            }else{
+                $.ajax({
+                    method: 'post',
+                    url: 'user/register',
+                    data: {
+                        name: ret.name,
+                        password: ret.password,
+                        sno:ret.sno,
+                        pn:ret.pn,
+                        gender:ret.gender,
+                        email: ret.email
+                    },
+                    success:function (data){
+                     if (data.success){
+                         layer.msg("注册成功请关闭窗口");
+                     }  else {
+                         layer.msg("注册失败，可能用户名重复");
+                     }
+                    }
+                });
+            }
+            return false;
+        });
+    });
+    function submit(){
+
+    }
+</script>
+</html>

@@ -46,10 +46,10 @@
                     <input type="password" name="password" lay-verify="required|password" placeholder="密码" autocomplete="off" class="layui-input" value="123456">
                 </div>
                 <div class="layui-form-item">
-                    <button class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="login">登 入</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit="" lay-filter="login">登 录</button>
                 </div>
                 <div class="layui-form-item">
-                    <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid">注册</button>
+                    <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid" onclick="openRegister()">注 册</button>
                 </div>
 
             </form>
@@ -58,10 +58,14 @@
 </div>
 <script src="../layui.js" charset="utf-8"></script>
 <script>
+    let form;
+    let layer;
+    let $;
     layui.use(['form','jquery','layer'], function () {
-        let form = layui.form;
-        let layer= layui.layer;
-        let $ = layui.jquery;
+        form = layui.form;
+        layer= layui.layer;
+        $ = layui.jquery;
+
         form.on('submit(login)', function(data){
             let user=data.field;
             if (user.name===''||user.name===null||user.password===''||user.password===null){
@@ -89,6 +93,14 @@
             return false;
         });
     });
+
+    function openRegister(){
+        layer.open({
+            type: 2,
+            area: ['800px', '500px'],
+            content: 'register',
+        });
+    }
 </script>
 </body>
 </html>

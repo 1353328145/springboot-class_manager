@@ -29,6 +29,7 @@ public class ShiroConfig {
         map.put("/user/login","anon"); //这个资源不需要认证
         map.put("/user/register","anon"); //这个资源不需要认证
         map.put("/login","anon"); //这个资源不需要认证
+        map.put("/register","anon"); //这个资源不需要认证
         map.put("/css/**","anon");
         map.put("/lay/**","anon");
         map.put("/font/**","anon");

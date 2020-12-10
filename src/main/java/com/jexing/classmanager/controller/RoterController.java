@@ -26,4 +26,8 @@ public class RoterController {
         subject.logout();
         return "login";
     }
+    @RequestMapping("register")
+    public String register(){
+        return "register";
+    }
 }

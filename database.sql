@@ -25,9 +25,9 @@ CREATE TABLE user (
     # 性别 1 男 0 女
                       email CHAR (30),
     #邮箱
-                      rank_id INT DEFAULT 1,
+                      rank_id INT DEFAULT 1
     #等级默认普通用户
-                      photo VARCHAR (50) #头像路径
+
 );
 
 #权限表
