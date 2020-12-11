@@ -35,4 +35,8 @@ public class RoterController {
     @RequestMapping("stars")
     @RequiresRoles("admin")
     public String stars(){return "page/stars";}
+
+    @RequestMapping("publish")
+    @RequiresRoles("admin")
+    public String publish(){return "page/publish";}
 }

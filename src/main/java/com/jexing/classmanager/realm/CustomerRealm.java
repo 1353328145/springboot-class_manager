@@ -22,7 +22,6 @@ public class CustomerRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         User current = userService.getUserByName((String) principalCollection.getPrimaryPrincipal());
         SimpleAuthorizationInfo simpleAuthenticationInfo = new SimpleAuthorizationInfo();
-        System.out.println("用户授权"+current);
         if (current==null){
             return null;
         }else{
