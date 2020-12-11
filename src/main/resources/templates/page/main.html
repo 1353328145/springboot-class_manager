@@ -1,45 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>主页</title>
-    <link rel="stylesheet" href="../../css/layui.css">
-
+    <meta charset="utf-8">
+    <title>主页一</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
 </head>
+<style>
+    .layui-top-box {padding:40px 20px 20px 20px;color:#fff}
+    .panel {margin-bottom:17px;background-color:#fff;border:1px solid transparent;border-radius:3px;-webkit-box-shadow:0 1px 1px rgba(0,0,0,.05);box-shadow:0 1px 1px rgba(0,0,0,.05)}
+    .panel-body {padding:15px}
+    .panel-title {margin-top:0;margin-bottom:0;font-size:14px;color:inherit}
+    .main_btn > p {height:40px;}
+</style>
 <body>
-<div class="layui-card">
-    <div class="layui-container">
-        <div class="layui-row">
+<div class="layuimini-container">
+    <div class="layui-top-box">
+        <div class="layui-row layui-col-space10">
             <div class="layui-col-md3">
-                <div style="">
-
+                <div class="col-xs-6 col-md-3">
+                    <div class="panel layui-bg-cyan">
+                        <div class="panel-body">
+                            <div class="panel-title">
+                                <h5>用户统计</h5>
+                            </div>
+                            <div class="panel-content">
+                                <h1 class="no-margins" id="userCount">1234</h1>
+                                <small>当前用户总记录数</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="layui-box">
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md12">
+                <blockquote class="layui-elem-quote main_btn">
+                    欢迎使用班级活动管理系统,springboot+mybatis+thymeleaf+shiro
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-box">
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md6">
+                <ul class="layui-timeline">
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">8月18日</h3>
+                            <p>
+                                layui 2.0 的一切准备工作似乎都已到位。发布之弦，一触即发。
+                                <br>不枉近百个日日夜夜与之为伴。因小而大，因弱而强。
+                                <br>无论它能走多远，抑或如何支撑？至少我曾倾注全心，无怨无悔 <i class="layui-icon"></i>
+                            </p>
+                        </div>
+                    </li>
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">8月16日</h3>
+                            <p>杜甫的思想核心是儒家的仁政思想，他有“<em>致君尧舜上，再使风俗淳</em>”的宏伟抱负。个人最爱的名篇有：</p>
+                            <ul>
+                                <li>《登高》</li>
+                                <li>《茅屋为秋风所破歌》</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">8月15日</h3>
+                            <p>
+                                中国人民抗日战争胜利72周年
+                                <br>常常在想，尽管对这个国家有这样那样的抱怨，但我们的确生在了最好的时代
+                                <br>铭记、感恩
+                                <br>所有为中华民族浴血奋战的英雄将士
+                                <br>永垂不朽
+                            </p>
+                        </div>
+                    </li>
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <div class="layui-timeline-title">过去</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!--            <div class="layui-col-md6">-->
+            <!--            </div>-->
+        </div>
+    </div>
 </div>
-</body>
-<script src="../../layui.js"></script>
+<script src="../../layui.js" charset="utf-8"></script>
 <script>
-    let element;
-    let layer;
-    let user;
-    let $;
-    layui.use(['element','layer','jquery'], function(){
-        element = layui.element;
-        layer= layui.layer;
-        $ = layui.jquery;
+    layui.use(['jquery'], function(){
+        let $ = layui.jquery;
         $.ajax({
+            url:'user/getCount',
             method:'get',
-            url:'user/getById/'+window.sessionStorage.getItem("uid"),
             success:function (data){
-                user=data.data.user;
-                $("#name").text(user.name);
-                $("#photo").attr("src",'img/man.jpg')
+                $("#userCount").text(data.data.count)
             }
         })
     });
 </script>
-<style>
-</style>
+</body>
 </html>

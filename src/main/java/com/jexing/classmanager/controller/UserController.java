@@ -76,7 +76,7 @@ public class UserController {
     }
 
 
-    @GetMapping("getConut")
+    @GetMapping("getCount")
     public Msg getCount(){
         return Msg.success().add("count",userService.getCount());
     }
