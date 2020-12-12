@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +21,10 @@ public class NoticeServiceImpl implements NoticeService {
 
     private NoticeDao noticeDao;
 
+    public List<Notice> queryBytheme(String query){
+        return noticeDao.queryBytheme(query);
+    }
+
     /**
      * 通过ID查询单条数据
      *
@@ -32,27 +37,17 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    @Override
-    public List<Notice> queryAllByLimit(int offset, int limit) {
-        return this.noticeDao.queryAllByLimit(offset, limit);
-    }
-
-    /**
      * 新增数据
      *
      * @param notice 实例对象
      * @return 实例对象
      */
     @Override
-    public Notice insert(Notice notice) {
-        this.noticeDao.insert(notice);
-        return notice;
+    public int insert(Notice notice) {
+        if (notice.getUid()==null||notice.getContent()==null||notice.getTheme()==null){return -1;}
+        notice.setCreateTime(new Date());
+        System.out.println(notice);
+        return this.noticeDao.insert(notice);
     }
 
     /**

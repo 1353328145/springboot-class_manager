@@ -1,5 +1,7 @@
 package com.jexing.classmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,7 +11,6 @@ import java.util.Date;
  * @since 2020-12-09 12:49:54
  */
 public class Notice implements Serializable {
-    private static final long serialVersionUID = -48883128886111769L;
 
     private Integer id;
 
@@ -18,9 +19,18 @@ public class Notice implements Serializable {
     private String theme;
 
     private String content;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Integer getId() {
         return id;

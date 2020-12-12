@@ -12,3 +12,8 @@ spring:
 mybatis:
   typeAliasesPackage: com.jexing.classmanager.entity
   mapperLocations: classpath:mapper/*.xml
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

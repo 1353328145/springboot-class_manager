@@ -3,11 +3,23 @@
 <mapper namespace="com.jexing.classmanager.dao.NoticeDao">
 
     <resultMap type="com.jexing.classmanager.entity.Notice" id="NoticeMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="uid" column="uid" jdbcType="INTEGER"/>
-        <result property="theme" column="theme" jdbcType="VARCHAR"/>
-        <result property="content" column="content" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" />
+        <result property="uid" column="uid" />
+        <result property="theme" column="theme" />
+        <result property="content" column="content" />
+        <result property="createTime" column="create_time" />
+        <association property="user" javaType="com.jexing.classmanager.entity.User">
+            <id property="id" column="id"/>
+            <result property="name" column="NAME"/>
+            <result property="sno" column="sno" />
+            <result property="password" column="PASSWORD"/>
+            <result property="stars" column="stars" />
+            <result property="pn" column="pn" />
+            <result property="rankId" column="rank_id"/>
+            <result property="gender" column="gender"/>
+            <result property="email" column="email" />
+            <result property="rankId" column="rank_id"/>
+        </association>
     </resultMap>
 
     <!--查询单个-->
@@ -21,16 +33,6 @@
         where id = #{id}
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="NoticeMap">
-        select id,
-               uid,
-               theme,
-               content,
-               create_time
-        from class_manager.notice
-        limit #{offset}, #{limit}
-    </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="NoticeMap">
@@ -56,10 +58,16 @@
         </where>
     </select>
 
+    <select id="queryBytheme" resultMap="NoticeMap">
+        select n.*, u.name,u.pn
+        from
+        notice n,user u where theme like concat('%',#{query},'%') and uid = u.id
+    </select>
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into class_manager.notice(uid, theme, content, create_time)
-        values (#{uid}, #{theme}, #{content}, #{createTime})
+        values (#{uid},#{theme}, #{content}, #{createTime})
     </insert>
 
     <!--通过主键修改数据-->

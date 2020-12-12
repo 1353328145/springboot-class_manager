@@ -11,6 +11,13 @@ import java.util.List;
  */
 public interface NoticeService {
 
+
+    /**
+     * 通过主题查询数据
+     * @param query
+     * @return
+     */
+    List<Notice> queryBytheme(String query);
     /**
      * 通过ID查询单条数据
      *
@@ -19,14 +26,6 @@ public interface NoticeService {
      */
     Notice queryById(Integer id);
 
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<Notice> queryAllByLimit(int offset, int limit);
 
     /**
      * 新增数据
@@ -34,7 +33,7 @@ public interface NoticeService {
      * @param notice 实例对象
      * @return 实例对象
      */
-    Notice insert(Notice notice);
+    int insert(Notice notice);
 
     /**
      * 修改数据

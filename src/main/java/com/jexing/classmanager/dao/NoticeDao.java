@@ -15,21 +15,17 @@ import java.util.List;
 public interface NoticeDao {
 
     /**
+     * 查询记录
+     * @return
+     */
+    List<Notice> queryBytheme(String query);
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键
      * @return 实例对象
      */
     Notice queryById(Integer id);
-
-    /**
-     * 查询指定行数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<Notice> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
 
 
     /**
