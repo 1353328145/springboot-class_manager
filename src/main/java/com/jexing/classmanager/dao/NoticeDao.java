@@ -60,4 +60,5 @@ public interface NoticeDao {
      */
     int deleteById(Integer id);
 
+    int queryCount();
 }

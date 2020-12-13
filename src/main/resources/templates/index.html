@@ -40,7 +40,7 @@
                 <li class="layui-nav-item"><a href="/main" target="iframeMain">首页</a></li>
                 <li class="layui-nav-item"><a href="/notice" target="iframeMain">公告列表</a></li>
                 <li class="layui-nav-item"><a href="">我的积分</a></li>
-                <li class="layui-nav-item"><a href="">我的消息</a></li>
+                <li class="layui-nav-item"><a href="">留言板</a></li>
             </ul>
         </div>
     </div>
@@ -72,7 +72,11 @@
             success:function (data){
                 user=data.data.user;
                 $("#name").text(user.name);
-                $("#photo").attr("src",'img/man.jpg')
+                if (user.gender===1){
+                    $("#photo").attr("src",'img/man.jpg')
+                }else{
+                    $("#photo").attr("src",'img/woman.jpg')
+                }
             }
         })
     });

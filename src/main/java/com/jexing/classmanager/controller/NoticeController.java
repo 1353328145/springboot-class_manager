@@ -33,12 +33,30 @@ public class NoticeController {
         PageHelper.startPage(page,limit);
         List<Notice> notices = noticeService.queryBytheme(query);
         PageInfo<Notice> info=new PageInfo<>(notices);
-
         Map<String,Object> map=new HashMap<>();
         map.put("data",info.getList());
         map.put("count",info.getTotal());
         map.put("msg","查询成功");
         map.put("code",0);
         return map;
+    }
+
+    @PutMapping("update")
+    public Msg update(Notice notice){
+        int update = noticeService.update(notice);
+        return update >0?Msg.success():Msg.fail();
+    }
+
+    @GetMapping("getCount")
+    public Msg getCount(){
+        return Msg.success().add("count",noticeService.queryCount());
+    }
+
+    @DeleteMapping("delete")
+    public Msg delete(Notice notice){
+        if (notice.getId()==null){
+            return Msg.fail();
+        }
+        return noticeService.deleteById(notice.getId())?Msg.success():Msg.fail();
     }
 }

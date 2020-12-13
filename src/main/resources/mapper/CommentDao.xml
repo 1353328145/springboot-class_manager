@@ -4,7 +4,6 @@
 
     <resultMap type="com.jexing.classmanager.entity.Comment" id="CommentMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="nid" column="nid" jdbcType="INTEGER"/>
         <result property="fromId" column="from_id" jdbcType="INTEGER"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -13,7 +12,6 @@
     <!--查询单个-->
     <select id="queryById" resultMap="CommentMap">
         select id,
-               nid,
                from_id,
                content,
                create_time
@@ -24,7 +22,6 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="CommentMap">
         select id,
-               nid,
                from_id,
                content,
                create_time
@@ -35,14 +32,11 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="CommentMap">
         select
-        id, nid, from_id, content, create_time
+        id, from_id, content, create_time
         from class_manager.comment
         <where>
             <if test="id != null">
                 and id = #{id}
-            </if>
-            <if test="nid != null">
-                and nid = #{nid}
             </if>
             <if test="fromId != null">
                 and from_id = #{fromId}
@@ -58,17 +52,14 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into class_manager.comment(nid, from_id, content, create_time)
-        values (#{nid}, #{fromId}, #{content}, #{createTime})
+        insert into class_manager.comment(from_id, content, create_time)
+        values ( #{fromId}, #{content}, #{createTime})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
         update class_manager.comment
         <set>
-            <if test="nid != null">
-                nid = #{nid},
-            </if>
             <if test="fromId != null">
                 from_id = #{fromId},
             </if>

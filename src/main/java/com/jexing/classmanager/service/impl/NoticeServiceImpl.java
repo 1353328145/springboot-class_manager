@@ -46,7 +46,6 @@ public class NoticeServiceImpl implements NoticeService {
     public int insert(Notice notice) {
         if (notice.getUid()==null||notice.getContent()==null||notice.getTheme()==null){return -1;}
         notice.setCreateTime(new Date());
-        System.out.println(notice);
         return this.noticeDao.insert(notice);
     }
 
@@ -57,9 +56,8 @@ public class NoticeServiceImpl implements NoticeService {
      * @return 实例对象
      */
     @Override
-    public Notice update(Notice notice) {
-        this.noticeDao.update(notice);
-        return this.queryById(notice.getId());
+    public int update(Notice notice) {
+        return this.noticeDao.update(notice);
     }
 
     /**
@@ -71,5 +69,10 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public boolean deleteById(Integer id) {
         return this.noticeDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public int queryCount() {
+        return noticeDao.queryCount();
     }
 }

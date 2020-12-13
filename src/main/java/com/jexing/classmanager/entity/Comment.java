@@ -9,11 +9,8 @@ import java.util.Date;
  * @since 2020-12-09 12:49:42
  */
 public class Comment implements Serializable {
-    private static final long serialVersionUID = -36977061519211237L;
 
     private Integer id;
-
-    private Integer nid;
 
     private Integer fromId;
 
@@ -28,14 +25,6 @@ public class Comment implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getNid() {
-        return nid;
-    }
-
-    public void setNid(Integer nid) {
-        this.nid = nid;
     }
 
     public Integer getFromId() {
@@ -66,7 +55,6 @@ public class Comment implements Serializable {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", nid=" + nid +
                 ", fromId=" + fromId +
                 ", content='" + content + '\'' +
                 ", createTime=" + createTime +

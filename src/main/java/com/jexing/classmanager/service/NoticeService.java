@@ -41,7 +41,7 @@ public interface NoticeService {
      * @param notice 实例对象
      * @return 实例对象
      */
-    Notice update(Notice notice);
+    int update(Notice notice);
 
     /**
      * 通过主键删除数据
@@ -51,4 +51,5 @@ public interface NoticeService {
      */
     boolean deleteById(Integer id);
 
+    int queryCount();
 }

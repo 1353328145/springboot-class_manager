@@ -59,9 +59,12 @@
     </select>
 
     <select id="queryBytheme" resultMap="NoticeMap">
-        select n.*, u.name,u.pn
+        select n.*, u.*
         from
-        notice n,user u where theme like concat('%',#{query},'%') and uid = u.id
+        notice n,user u where theme like concat('%',#{query},'%') and n.uid = u.id order by create_time desc
+    </select>
+    <select id="queryCount" resultType="java.lang.Integer">
+        select count(*) from notice
     </select>
 
     <!--新增所有列-->

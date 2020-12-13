@@ -11,6 +11,9 @@
             <div class="layui-col-md4">
                 <form class="layui-form" action="">
                     <div class="layui-form-item">
+                        <input id="noticeId" type="hidden">
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label">公告主题</label>
                         <div class="layui-input-block">
                             <input type="text" id = "theme" placeholder="请输入" autocomplete="off" class="layui-input" lay-verify="required">
@@ -20,25 +23,42 @@
                         <textarea id="content" style="display: none;"></textarea>
                     </div>
                     <div class="layui-form-item">
-                        <button type="button" class="layui-btn layui-btn-radius layui-btn-fluid" onclick="save()">提交信息</button>
+                        <div id="saveNotice">
+                            <button type="button" class="layui-btn layui-btn-radius layui-btn-fluid" onclick="save()">提交信息</button>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="layui-col-md1">&nbsp;</div>
             <div class="layui-col-md7">
-                <table class="layui-table" lay-even lay-skin="nob" lay-size="lg" id="notices"
-                       lay-filter="tableData"></table>
+                <div class="layui-row">
+                    <div class="layui-col-md2">
+                        <button type="button" class="layui-btn layui-btn-primary" onclick="reloadNotices()">
+                            <i class="layui-icon">&#xe669;</i>
+                        </button>
+                    </div>
+                    <div class="layui-col-md4">
+                        <input type="text" placeholder="标题关键字" class="layui-input" id="queryTheme">
+                    </div>
+                    <div class="layui-col-md6"></div>
+                </div>
+                <div class="layui-row">
+                    <table class="layui-table" lay-even lay-skin="nob" lay-size="lg" id="notices"
+                           lay-filter="tableData"></table>
+                </div>
             </div>
         </div>
     </div>
+
+
 </body>
 <script src="../../layui.js" charset="utf-8"></script>
 <script type="text/html" id="do">
     <div class="layui-btn-group">
-        <button type="button" class="layui-btn layui-btn-sm">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="edit">
             <i class="layui-icon">&#xe642;</i>
         </button>
-        <button type="button" class="layui-btn layui-btn-sm">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="delete">
             <i class="layui-icon">&#xe640;</i>
         </button>
     </div>
@@ -74,12 +94,11 @@
             elem:'#notices'
             ,id:'noticeTable'
             ,url:'notice/load'
-            ,height: 315 //容器高度
+            ,height: 500 //容器高度
             ,method: 'get'
             ,page: true
             ,where :{
-                query: '',
-
+                query: $("#queryTheme").val(),
             }
             ,cols: [
                 [
@@ -91,27 +110,122 @@
                 ]
             ] //设置表头
         });
-    });
+        table.on('tool(tableData)',function (obj) {
+            let data = obj.data;
+            let layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if (layEvent === 'edit'){
+                layer.msg("进入更新模式");
+                $("#theme").attr("value",data.theme);
+                layedit.setContent(index,data.content,false);
+                $("#noticeId").attr("value",data.id);
+                $("#saveNotice").html('<button type="button" class="layui-btn layui-btn-primary layui-btn-radius" onclick="update()">更新信息</button>' +
+                    '<button type="button" class="layui-btn layui-btn-radius" onclick="clearContent()">退出更新模式</button>');
+            }
+            if (layEvent ==='delete'){
+                //eg1
+                layer.confirm('你确认要删除吗?', {
+                    btn: ['删除'] //可以无限个按钮
+                }, function(index, layero){
+                    $.ajax({
+                        url:'notice/delete',
+                        method:'delete',
+                        data:{
+                            id:data.id
+                        },
+                        success:function (data){
+                            if (data.success){
+                                layer.msg("删除成功");
+                                reloadNotices();
+                            }else{
+                                layer.msg("删除失败");
+                            }
+                        }
+                    })
+                });
+            }
+        })
+    }); 
     function save() {
+        let theme = $("#theme").val();
+        let content= layedit.getContent(index);
+        if (isNull(theme)||isNull(content)){
+            layer.msg("数据不能为空");
+            return ;
+        }
         $.ajax({
             url:'notice/save',
             method:'post',
             data:{
                 uid:window.sessionStorage.getItem("uid"),
-                theme: $("#theme").val(),
-                content: layedit.getContent(index)
+                theme: theme,
+                content: content
             },
             success:function (data) {
                 if (data.success){
                     layer.msg("保存成功！")
+                    reloadNotices();
                 } else{
                     layer.msg("保存失败！")
+                }
+
+            },
+            error:function () {
+                layer.msg("服务器出错了。。")
+            }
+        })
+    }
+    function update(){
+        let id = $("#noticeId").val();
+        let theme = $("#theme").val();
+        let content= layedit.getContent(index);
+        if (isNull(theme)||isNull(content)||isNull(id)){
+            layer.msg("数据不能为空");
+            return ;
+        }
+        $.ajax({
+            url:'notice/update',
+            method:'put',
+            data:{
+                id:id,
+                theme: theme,
+                content: content
+            },
+            success:function (data) {
+                if (data.success){
+                    layer.msg("更新成功！")
+                    reloadNotices();
+                } else{
+                    layer.msg("更新失败！")
                 }
             },
             error:function () {
                 layer.msg("服务器出错了。。")
             }
         })
+    }
+    function clearContent(){
+        $("#saveNotice").html('<button type="button" class="layui-btn layui-btn-radius layui-btn-fluid" onclick="save()">提交信息</button>');
+        $("#theme").attr("value",'');
+        layedit.setContent(index,'',false);
+        layer.msg("新增模式")
+    }
+    function isNull(data){
+        if (data===null||data===undefined||data===''){
+            return true;
+        }
+        return false;
+    }
+    function reloadNotices() {
+        let query = $("#queryTheme").val()
+        //执行重载
+        table.reload('noticeTable', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+                query: query
+            }
+        }, 'data');
     }
 </script>
 <style>

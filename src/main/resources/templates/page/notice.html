@@ -4,15 +4,35 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../../css/layui.css" media="all">
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
 </head>
 <body>
 <div class="layui-container" style="margin-top: 10px">
-    <div class="layui-row myBox">
-        <div class="layui-card">
-            <div class="layui-card-header">卡片面板</div>
-            <div class="layui-card-body">
-                卡片式面板面板通常用于非白色背景色的主体内<br>
-                从而映衬出边框投影
+    <div class="layui-row" style="margin-top: 20px">
+        <div class="layui-col-md4">
+            <div class="layui-row">
+                <ul class="layui-timeline" id="notices">
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="layui-col-md1">
+            &nbsp;
+        </div>
+        <div class="layui-col-md7">
+            <div class="layui-row">
+                <div id="page"></div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-md4">
+                    <button type="button" class="layui-btn layui-btn-primary" onclick="load(1)">
+                        <i class="layui-icon">&#xe669;</i>
+                    </button>
+                </div>
+                <div class="layui-col-md8">
+                    <input type="text" placeholder="标题关键字" class="layui-input" id="queryTheme">
+                </div>
             </div>
         </div>
     </div>
@@ -20,15 +40,108 @@
 </body>
 <script src="../../layui.js" charset="utf-8"></script>
 <script>
+    let element;
+    let layer;
+    let laypage;
+    let $;
+    let noticesCache;
+    let count = 0;
+    layui.use(['element','layer','jquery','laypage'], function(){
+        element = layui.element;
+        laypage = layui.laypage;
+        layer= layui.layer;
+        $ = layui.jquery;
+        getNoticeCount();
+        laypage.render({
+            elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+            ,count: count //数据总数，从服务端得到
+            ,limit: 5
+            ,jump: function(obj, first) {
+                // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                //首次不执行
+                load(obj.curr)
 
+            }
+        });
+    });
+    function getNoticeCount(){
+        $.ajax({
+            url:'notice/getCount',
+            method:'get',
+            async: false,
+            success:function (data){
+                count = data.data.count;
+            }
+        })
+    }
+    function openContent(data){
+        // alert(noticesCache[data].content);
+        layer.open({
+            type: 1,
+            title:'公告详情',
+            area: ['600px', '600px'],
+            content: '<div class="layui-container" style="margin-top: 20px;margin-left: 30px">'+noticesCache[data].content+"</div>"
+        });
+    }
+    function load(page) {
+        $("#notices").empty();
+        $("#notices").html('')
+        $.ajax({
+            url:'notice/load',
+            method:'get',
+            data:{
+                query:$("#queryTheme").val(),
+                page:page,
+                limit:5,
+            },
+            success:function (data) {
+                count = data.count;
+                laypage.render({
+                    elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+                    ,count: count //数据总数，从服务端得到
+                    ,limit: 5
+                    ,jump: function(obj, first) {
+                        // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                        //首次不执行
+                        if (!first){
+                            load(obj.curr)
+                        }
+                    }
+                });
+                let notices = data.data;
+                noticesCache = notices;
+                if (notices.length===0){
+                    $("#notices").append("<h2>没有查询到数据 (⊙＿⊙)</h2>");
+                }
+                for (let i = 0; i < notices.length; i++) {
+                    let str= notices[i].user.gender===1?"img/man.jpg":"img/woman.jpg";
+                    $("#notices").append('<li class="layui-timeline-item">\n' +
+                        '                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>' +
+                        '                        <div class="layui-timeline-content layui-text">' +
+                        '                            <h3 class="layui-timeline-title">'+notices[i].createTime+'</h3>' +
+                        '                            <p>' +
+                        '                                <img src="'+str+'" class="layui-nav-img" id="photo">&nbsp;&nbsp;'+notices[i].user.name+'<br><br>' +
+                        '                                <span style="font-size: 20px; color: #4E5465;font-weight: bolder">'+notices[i].theme+'</span><br><br>' +
+                        '                                <button type="button" class="layui-btn layui-btn-primary" onclick="openContent('+i+')">' +
+                        '                                    <i class="layui-icon">&#xe622;</i> 查看详细内容' +
+                        '                                </button>' +
+                        '                            </p>' +
+                        '                        </div>' +
+                        '                    </li>')
+                }
+            }
+        })
+    }
 </script>
 <style>
-    body{
-        background: #9F9F9F;
-    }
     .myBox{
         margin-top: 10px;
         box-shadow: #d6d6d6 0px 0px 5px;
+    }
+    .theme{
+        font-size: 20px;
+        color: #4E5465;
+        font-family: "Arial Rounded MT Bold",serif;
     }
 </style>
 </html>
