@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row" style="margin-top: 30px">
+        <div class="layui-col-md8">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" required  lay-verify="required" name="name" id="name"
+                               placeholder="请输入标题" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="email" required lay-verify="required" name="email" id="email"
+                               placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电话</label>
+                    <div class="layui-input-block">
+                        <input type="text" required lay-verify="required|phone" name="pn" id="pn"
+                               placeholder="请输入电话" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn"  style="margin-left: 100px" onclick="userInfoUpdate()">保存修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 30px">
+        <div class="layui-col-md8">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">新密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" required lay-verify="required" name="password" id="password"
+                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">确认新密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" required lay-verify="required" name="re_password" id="re_password"
+                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" onclick="passwordUpdate()" style="margin-left: 100px">修改密码</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script>
+    let $;
+    let form;
+    let layer;
+    layui.use(['jquery','form','layer'], function(){
+        $ = layui.jquery;
+        form = layui.form;
+        layer= layui.layer;
+        updateUser();
+    });
+    function updateUser() {
+        $.ajax({
+            method:'get',
+            url:'user/getById/'+window.sessionStorage.getItem("uid"),
+            async:false,
+            success:function (data){
+                user=data.data.user;
+                $("#name").attr('value',user.name);
+                $("#pn").attr('value',user.pn);
+                $("#email").attr('value',user.email);
+            }
+        })
+    }
+    function userInfoUpdate() {
+        let name = $("#name").val();
+        let pn = $("#pn").val();
+        let email = $("#email").val();
+        let uid = window.sessionStorage.getItem("uid");
+        if(!uid){
+            layer.msg("登录失效，请重新登录");
+            return;
+        }
+        if (name.length<3||name.length>15) {
+            layer.msg("用户名长度不符合要求");
+            return;
+        }
+        $.ajax({
+            url:'user/updateInfo',
+            method: 'put',
+            async:false,
+            data:{
+                id:window.sessionStorage.getItem("uid"),
+                name:name,
+                pn:pn,
+                email:email
+            },
+            success:function (data) {
+                if (data.success){
+                    alert("更新成功");
+                    // layer.alert("更新成功");
+                } else{
+                    alert("更新失败")
+                }
+            },
+            error:function () {
+                layer.msg("服务器出现问题");
+            }
+        })
+    }
+    function passwordUpdate() {
+        let password = $("#password").val();
+        let rePassword = $("#re_password").val();
+        let uid = window.sessionStorage.getItem("uid");
+        if(!uid){
+            alert("登录失效，请重新登录");
+            return;
+        }
+        if (password!==rePassword){
+            alert("新旧密码不一致");
+            return;
+        }else if (password.length<3||password.length>15) {
+            alert("密码长度不对");
+            return;
+        }else if (rePassword.length<3||rePassword.length>15) {
+            alert("密码长度不对");
+            return;
+        }
+        $.ajax({
+            url:'user/updatePassword',
+            method: 'put',
+            async:false,
+            data:{
+                id:uid,
+                password:password
+            },
+            success:function (data) {
+                if (data.success){
+                    alert("更新成功,请重新登陆");
+                } else{
+                    alert("更新失败")
+                }
+            },
+            error:function () {
+                layer.msg("服务器出现问题");
+            }
+        })
+    }
+
+</script>
+</html>

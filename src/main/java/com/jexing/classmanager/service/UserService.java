@@ -1,5 +1,6 @@
 package com.jexing.classmanager.service;
 
+import com.jexing.classmanager.entity.Msg;
 import com.jexing.classmanager.entity.User;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public interface UserService {
      * @param user 实例对象
      * @return 实例对象
      */
-    User update(User user);
+    int update(User user);
 
     /**
      * 通过主键删除数据
@@ -58,4 +59,6 @@ public interface UserService {
     int queryIdByName(String name);
 
     int getCount();
+
+    int updatePassword(User user);
 }

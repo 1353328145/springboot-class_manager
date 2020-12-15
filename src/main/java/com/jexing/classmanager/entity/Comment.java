@@ -1,7 +1,10 @@
 package com.jexing.classmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * (Comment)实体类
@@ -15,9 +18,29 @@ public class Comment implements Serializable {
     private Integer fromId;
 
     private String content;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 
     private Date createTime;
 
+    private List<CommentChild> children;
+
+    private User fromUser;
+
+    public User getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(User fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    public List<CommentChild> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<CommentChild> children) {
+        this.children = children;
+    }
 
     public Integer getId() {
         return id;
@@ -58,6 +81,8 @@ public class Comment implements Serializable {
                 ", fromId=" + fromId +
                 ", content='" + content + '\'' +
                 ", createTime=" + createTime +
+                ", children=" + children +
+                ", fromUser=" + fromUser +
                 '}';
     }
 }

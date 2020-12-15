@@ -3,10 +3,17 @@
 <mapper namespace="com.jexing.classmanager.dao.CommentDao">
 
     <resultMap type="com.jexing.classmanager.entity.Comment" id="CommentMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="fromId" column="from_id" jdbcType="INTEGER"/>
-        <result property="content" column="content" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" />
+        <result property="fromId" column="from_id" />
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <association property="fromUser" javaType="com.jexing.classmanager.entity.User">
+            <result property="name" column="name"/>
+            <result property="gender" column="gender"/>
+        </association>
+        <collection property="children" ofType="com.jexing.classmanager.entity.CommentChild" column="id"
+                    select="com.jexing.classmanager.dao.CommentChildDao.queryByCid">
+        </collection>
     </resultMap>
 
     <!--查询单个-->
@@ -17,16 +24,6 @@
                create_time
         from class_manager.comment
         where id = #{id}
-    </select>
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="CommentMap">
-        select id,
-               from_id,
-               content,
-               create_time
-        from class_manager.comment
-        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -48,6 +45,12 @@
                 and create_time = #{createTime}
             </if>
         </where>
+    </select>
+    <select id="queryAllWithChild" resultMap="CommentMap">
+        select c.*,u.name,u.gender from comment c,user u where c.from_id = u.id order by create_time desc
+    </select>
+    <select id="queryCount" resultType="java.lang.Integer">
+        select count(*) from comment
     </select>
 
     <!--新增所有列-->

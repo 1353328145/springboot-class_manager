@@ -39,4 +39,17 @@ public class RoterController {
     @RequestMapping("publish")
     @RequiresRoles("admin")
     public String publish(){return "page/publish";}
+
+    @RequestMapping("userInfo")
+    public String userInfo(){
+        return "page/userInfo";
+    }
+
+    @RequestMapping("mystar")
+    public String mystar(){ return "page/mystar" ;}
+
+    @RequestMapping("comment")
+    public String comment(){return "page/comment";}
+    @RequestMapping("comment_child")
+    public String comment_child(){return "page/commentChild";}
 }

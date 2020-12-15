@@ -8,6 +8,18 @@
 </head>
 <body>
 <div class="layui-container" style="margin-top: 10px">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <span style="font-size: 20px; color: #4E5465;font-weight: bolder;">通知列表</span>
+        </div>
+        <div class="layui-col-md1">
+            &nbsp;
+        </div>
+        <div class="layui-col-md7">
+            <div id="page"></div>
+        </div>
+
+    </div>
     <div class="layui-row" style="margin-top: 20px">
         <div class="layui-col-md4">
             <div class="layui-row">
@@ -21,9 +33,6 @@
             &nbsp;
         </div>
         <div class="layui-col-md7">
-            <div class="layui-row">
-                <div id="page"></div>
-            </div>
             <div class="layui-row">
                 <div class="layui-col-md4">
                     <button type="button" class="layui-btn layui-btn-primary" onclick="load(1)">
@@ -85,7 +94,7 @@
     }
     function load(page) {
         $("#notices").empty();
-        $("#notices").html('')
+        $("#notices").html('');
         $.ajax({
             url:'notice/load',
             method:'get',

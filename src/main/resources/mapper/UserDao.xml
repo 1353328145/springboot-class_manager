@@ -79,6 +79,9 @@
     <select id="queryCount" resultType="java.lang.Integer">
         select count(*) from user
     </select>
+    <select id="queryNameById" resultMap="UserMap">
+        select id,name from user where id = #{id}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
@@ -97,7 +100,7 @@
                 sno = #{sno},
             </if>
             <if test="password != null and password != ''">
-                PASSWORD = #{password},
+                password = #{password},
             </if>
             <if test="stars != null">
                 stars = #{stars},

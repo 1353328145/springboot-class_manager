@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的积分</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
+</head>
+<body>
+    <div class="layui-container">
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote main_btn">
+                当前您的积分为 <span id="star" style="font-size: 20px;color: #4E5465;font-weight: bolder">加载中</span>
+                ,下方为积分增减日志
+            </blockquote>
+        </div>
+        <div class="layui-row" style="margin-top: 30px">
+            <table id="logTable"></table>
+        </div>
+    </div>
+</body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script>
+    let $;
+    let user;
+    let table;
+    layui.use(['jquery','table'], function(){
+        $=layui.jquery;
+        table = layui.table;
+        updateUser();
+        table.render({
+            elem:'#logTable'
+            ,id:'logs'
+            ,url:'#'
+            ,height: 500 //容器高度
+            ,method: 'get'
+            ,page: true
+            ,where :{
+                query: $("#queryTheme").val(),
+            }
+            ,cols: [
+                [
+                    {field: 'createTime', title: '时间', width:160},
+                ]
+            ] //设置表头
+        });
+    });
+    function updateUser() {
+        $.ajax({
+            method:'get',
+            url:'user/getById/'+window.sessionStorage.getItem("uid"),
+            async:true,
+            success:function (data){
+                user=data.data.user;
+                $("#star").html(user.stars);
+            }
+        })
+    }
+</script>
+</html>

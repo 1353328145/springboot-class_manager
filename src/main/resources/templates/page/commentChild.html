@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
+
+</head>
+<body>
+    <div class="layui-container" style="margin-top: 20px;margin-left: 10px">
+        <div class="layui-row" id="comments">
+        </div>
+    </div>
+    <div class="bottom">
+        <input type="text" placeholder="回复" class="layui-input" id="sendComment" style="border-radius: 10px;border: #9F9F9F solid 1px">
+    </div>
+</body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script>
+    let $;
+    let childCache;
+    function child(d) {
+        let comments= $("#comments");
+        childCache = d;
+        console.log(childCache);
+        for (let i = 0; i < childCache.length; i++) {
+            let a = childCache[i].fromUser.gender===1?'img/man.jpg':'img/woman.jpg';
+            let b = childCache[i].toUser.gender===1?'img/man.jpg':'img/woman.jpg';
+            let temp= $("<div></div>").append('<img src="'+a+'" class="layui-nav-img">'+childCache[i].fromUser.name+'回复@ '+'<img src="'+b+'" class="layui-nav-img">'+childCache[i].toUser.name+":           "+childCache[i].createTime);
+            let btn = $("<button class='layui-btn layui-btn-sm layui-btn-primary' onclick='addCC("+childCache[i].cid+","+childCache[i].fromId+")'>回复</button>");
+            let content = $("<div></div>").append(childCache[i].content);
+            comments.append(temp).append('<br>');
+            comments.append(content).append('<br>').append(btn).append('<hr>');
+        }
+    }
+    layui.use(['jquery'], function(){
+        $ = layui.jquery;
+    });
+    function addCC(cid,uid){
+        alert("父评论id" + cid);
+        alert("要回复者" + uid)
+    }
+</script>
+<style>
+    .bottom {
+        padding: 0;
+        height: 40px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+    }
+</style>
+</html>

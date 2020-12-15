@@ -53,9 +53,8 @@ public class UserServiceImpl implements UserService {
      * @return 实例对象
      */
     @Override
-    public User update(User user) {
-        this.userDao.update(user);
-        return this.queryById(user.getId());
+    public int update(User user) {
+        return this.userDao.update(user);
     }
 
     /**
@@ -82,5 +81,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public int getCount() {
         return userDao.queryCount();
+    }
+
+    @Override
+    public int updatePassword(User user) {
+        user.setPassword(new Md5Hash(user.getPassword()).toHex());
+        return userDao.update(user);
     }
 }

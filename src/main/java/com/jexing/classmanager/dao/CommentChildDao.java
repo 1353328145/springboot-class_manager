@@ -23,15 +23,9 @@ public interface CommentChildDao {
     CommentChild queryById(Integer id);
 
     /**
-     * 查询指定行数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
+     * 通过父留言查
      */
-    List<CommentChild> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
-
-
+    List<CommentChild> queryByCid(Integer cid);
     /**
      * 通过实体作为筛选条件查询
      *

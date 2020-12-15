@@ -60,5 +60,11 @@ public interface UserDao {
      */
     int queryIdByName(String name);
 
+    /**
+     * 用户id获取名字
+     * @return
+     */
+    User queryNameById(Integer id);
+
     int queryCount();
 }

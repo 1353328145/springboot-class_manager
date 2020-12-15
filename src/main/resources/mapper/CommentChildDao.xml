@@ -3,12 +3,20 @@
 <mapper namespace="com.jexing.classmanager.dao.CommentChildDao">
 
     <resultMap type="com.jexing.classmanager.entity.CommentChild" id="CommentChildMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="cid" column="cid" jdbcType="INTEGER"/>
-        <result property="fromId" column="from_id" jdbcType="INTEGER"/>
-        <result property="toId" column="to_id" jdbcType="INTEGER"/>
-        <result property="content" column="content" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" />
+        <result property="cid" column="cid" />
+        <result property="fromId" column="from_id" />
+        <result property="toId" column="to_id" />
+        <result property="content" column="content" />
+        <result property="createTime" column="create_time"/>
+        <association property="fromUser"  javaType="com.jexing.classmanager.entity.User">
+            <result property="name" column="fname"/>
+            <result property="gender" column="fg"/>
+        </association>
+        <association property="toUser"  javaType="com.jexing.classmanager.entity.User">
+            <result property="name" column="tname"/>
+            <result property="gender" column="tg"/>
+        </association>
     </resultMap>
 
     <!--查询单个-->
@@ -21,18 +29,6 @@
                create_time
         from class_manager.comment_child
         where id = #{id}
-    </select>
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="CommentChildMap">
-        select id,
-               cid,
-               from_id,
-               to_id,
-               content,
-               create_time
-        from class_manager.comment_child
-        limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -60,6 +56,17 @@
                 and create_time = #{createTime}
             </if>
         </where>
+    </select>
+    <select id="queryByCid" resultMap="CommentChildMap">
+      select cc.*,
+
+      u1.name fname,u1.gender fg,
+
+      u2.name tname,u2.gender tg
+
+      from comment_child cc,user u1,user u2
+
+      where cid = #{cid} and u1.id = cc.from_id and u2.id = cc.to_id;
     </select>
 
     <!--新增所有列-->

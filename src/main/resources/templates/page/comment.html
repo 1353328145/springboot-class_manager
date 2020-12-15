@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>留言板</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row">
+        <blockquote class="layui-elem-quote main_btn">
+            <span id="star" style="font-size: 20px;color: #4E5465;font-weight: bolder">留言板</span>
+        </blockquote>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-md2">
+            <button onclick="sendComment()" class="layui-btn layui-btn-primary layui-btn-fluid" style="border-radius: 10px;height: 100%"><i class="layui-icon">&#xe611;发布</i></button>
+        </div>
+        <div class="layui-col-md10" style="background: white">
+            <textarea id="comment" style="display: none;"></textarea>
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 30px" id="comments">
+    </div>
+    <div class="layui-row">
+        <div id="page" style="margin-left: 20px"></div>
+    </div>
+</div>
+</body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script>
+    let $;
+    let element;
+    let laypage;
+    let count;
+    let layer;
+    let commentCache;
+    let layedit;
+    let index;
+    layui.use(['jquery','element','laypage','layer','layedit'], function(){
+        $=layui.jquery;
+        element = layui.element;
+        laypage = layui.laypage;
+        layer = layui.layer;
+        layedit = layui.layedit;
+        loadCont();
+        laypage.render({
+            elem: 'page'
+            ,count: count
+            ,limit: 6
+            ,jump: function(obj, first) {
+                // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                //首次不执行
+                load(obj.curr)
+            }
+        });
+        index = layedit.build('comment',{
+            height: 100 ,//设置编辑器高度
+            tool:[
+                'strong' //加粗
+                ,'italic' //斜体
+                ,'underline' //下划线
+                ,'del' //删除线
+                ,'|' //分割线
+                ,'left' //左对齐
+                ,'center' //居中对齐
+                ,'right' //右对齐
+                ,'link' //超链接
+                ,'unlink' //清除链接
+                ,'face' //表情
+            ]
+        }); //建立编辑器
+    });
+    function loadCont() {
+        $.ajax({
+            url:'comment/getCount',
+            method: 'get',
+            async: false,
+            success:function (data) {
+                count = data.data.count;
+            }
+        })
+    }
+    function openComment(index) {
+        let arr = commentCache[index].children;
+        layer.open({
+            type: 2,
+            area: ['600px', '600px'],
+            maxmin: true,
+            title:'回复详情',
+            content: 'comment_child',
+            success:function (layero, index) {
+                // 获取子页面的iframe
+                let  iframe = window['layui-layer-iframe' + index];
+                // 向子页面的全局函数child传参
+                iframe.child(arr);
+            }
+        });
+    }
+    function load(page) {
+        let comments = $("#comments");
+        comments.empty();
+        $.ajax({
+            url:'comment/loadAll',
+            method:'get',
+            async: true,
+            data:{
+              page:page,
+              limit:6
+            },
+            success:function (data) {
+                count = data.data.count;
+                let arr= data.data.data;
+                commentCache = arr;
+                for (let i = 0; i < arr.length; i++) {
+                    let str = arr[i].fromUser.gender===1?'img/man.jpg':'img/woman.jpg';
+
+                    comments.append('<div class="layui-col-md3" style="margin-left: 20px;margin-top: 10px">' +
+                            '            <div class="layui-card">' +
+                            '                <div class="layui-card-header">' +
+                            '                    <img src="'+str+'" class="layui-nav-img">' +
+                                                    '   '+arr[i].fromUser.name +
+                            '                </div>' +
+                            '                <div class="layui-card-body">' +
+                                                 arr[i].createTime + '<br>'+
+                                                    arr[i].content + '<br><br>' +
+                            '                   <button type="button" onclick="openComment('+i+')" class="layui-btn layui-btn-sm layui-btn-primary">' +
+                            '                           <i class="layui-icon layui-icon-right">回复详情</i>' +
+                            '                    </button>'+
+                            '                </div>' +
+                            '            </div>' +
+                            '        </div>');
+                }
+            }
+        })
+    }
+    function sendComment() {
+        let content = layedit.getContent(index);
+        let uid = window.sessionStorage.getItem("uid");
+        if (!content||content==='<br>'){
+            layer.msg("编辑器不能为空");
+            return;
+        }
+        if (!uid){
+            layer.msg("登录失效请重新登陆");
+            return;
+        }
+        $.ajax({
+            url:'comment/add',
+            method:'post',
+            data:{
+                fromId:uid,
+                content:content
+            },
+            success:function (data) {
+                if (data.success){
+                    load(1);
+                    layer.alert("提交成功")
+                } else{
+                    layer.alert("提交失败")
+                }
+            }
+        });
+    }
+</script>
+<style>
+    body{
+        background: #e2e2e2;
+    }
+</style>
+</html>

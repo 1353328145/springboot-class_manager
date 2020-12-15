@@ -80,4 +80,16 @@ public class UserController {
     public Msg getCount(){
         return Msg.success().add("count",userService.getCount());
     }
+
+
+    @PutMapping("updateInfo")
+    public Msg updateInfo(User user){
+        int update = userService.update(user);
+        System.out.println(update);
+        return update >0?Msg.success():Msg.fail();
+    }
+    @PutMapping("updatePassword")
+    public Msg updatePassword(User user){
+        return userService.updatePassword(user)>0?Msg.success():Msg.fail();
+    }
 }
