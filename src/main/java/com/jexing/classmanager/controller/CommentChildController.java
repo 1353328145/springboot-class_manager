@@ -1,8 +1,11 @@
 package com.jexing.classmanager.controller;
 
 import com.jexing.classmanager.entity.CommentChild;
+import com.jexing.classmanager.entity.Msg;
 import com.jexing.classmanager.service.CommentChildService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,21 +19,13 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("commentChild")
 public class CommentChildController {
-    /**
-     * 服务对象
-     */
-    @Resource
+    @Autowired
     private CommentChildService commentChildService;
 
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("selectOne")
-    public CommentChild selectOne(Integer id) {
-        return this.commentChildService.queryById(id);
+    @PostMapping("add")
+    public Msg add(CommentChild commentChild){
+        if (commentChild.getCid()==null||commentChild.getContent()==null||commentChild.getToId()==null||commentChild.getToId()==null){return Msg.fail();}
+        return commentChildService.insert(commentChild)>0?Msg.success():Msg.fail();
     }
 
 }

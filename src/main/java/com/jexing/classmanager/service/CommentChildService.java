@@ -25,7 +25,7 @@ public interface CommentChildService {
      * @param commentChild 实例对象
      * @return 实例对象
      */
-    CommentChild insert(CommentChild commentChild);
+    int insert(CommentChild commentChild);
 
     /**
      * 修改数据

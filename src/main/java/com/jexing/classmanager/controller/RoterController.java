@@ -1,6 +1,7 @@
 package com.jexing.classmanager.controller;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
@@ -27,17 +28,18 @@ public class RoterController {
         subject.logout();
         return "login";
     }
+
     @RequestMapping("register")
     public String register(){
         return "register";
     }
 
     @RequestMapping("stars")
-    @RequiresRoles("admin")
+    @RequiresRoles(value={"admin", "root"}, logical= Logical.OR)
     public String stars(){return "page/stars";}
 
     @RequestMapping("publish")
-    @RequiresRoles("admin")
+    @RequiresRoles(value={"admin", "root"}, logical= Logical.OR)
     public String publish(){return "page/publish";}
 
     @RequestMapping("userInfo")
@@ -52,4 +54,8 @@ public class RoterController {
     public String comment(){return "page/comment";}
     @RequestMapping("comment_child")
     public String comment_child(){return "page/commentChild";}
+
+    @RequestMapping("rank_control")
+    @RequiresRoles("root")
+    public String rank_control(){return "page/rank";}
 }

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>权限管理</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
+</head>
+<body>
+    <div class="layui-container">
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote main_btn">
+               权限管理分两步，管理权限列表，为用户绑定权限
+            </blockquote>
+        </div>
+        <!--        权限表格-->
+        <div class="layui-row">
+            <div class="layui-col-md2">
+                <select id="rank" class="layui-select">
+                    <option value="1" selected>普通用户</option>
+                    <option value="2">管理员</option>
+                    <option value="3">系统管理员</option>
+                </select>
+            </div>
+            <div class="layui-col-md4">
+                <input type="text" id="info" placeholder="权限信息"  class="layui-input">
+            </div>
+            <div class="layui-col-md6">
+                <button class="layui-btn layui-btn-primary" onclick="addRank()">提交信息</button>
+            </div>
+        </div>
+        <div class="layui-row">
+            <table class="layui-table" lay-even lay-skin="nob" lay-size="lg" id="rank_list"
+                   lay-filter="rank_list_table"></table>
+        </div>
+        <!--        用户权限绑定-->
+        <div class="layui-row">
+            <div class="layui-col-md2">
+            </div>
+            <div class="layui-col-md4">
+                <input type="text" placeholder="输入用户名或者学号查找" class="layui-input" id="query">
+            </div>
+            <div class="layui-col-md6">
+                <button type="button" class="layui-btn layui-btn-primary" onclick="findUserByQuery()">
+                    <i class="layui-icon">&#xe669;</i>
+                </button>
+            </div>
+        </div>
+        <div class="layui-row" >
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>学号</th>
+                    <th>电话</th>
+                    <th>邮箱</th>
+                    <th>当前权限等级</th>
+                    <th>当前权限信息</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="userRank">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script type="text/html" id="do">
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="rankedit">
+            <i class="layui-icon">&#xe642;</i>
+        </button>
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="rankdelete">
+            <i class="layui-icon">&#xe640;</i>
+        </button>
+    </div>
+</script>
+<script>
+    let index;
+    let $;
+    let layer;
+    let table;
+    layui.use(['form','layer','jquery','table'], function(){
+        table = layui.table;
+        layedit = layui.layedit;
+        $ = layui.jquery;
+        layer =layui.layer;
+        table.render({
+            elem:'#rank_list'
+            ,id:'rank_list'
+            ,url:'rank/loadAllByPage'
+            ,height: 300 //容器高度
+            ,method: 'get'
+            ,page: true
+            ,cols: [
+                [
+                    {field: 'rank', title: '用户等级', width:160},
+                    {field: 'info', title: '用户信息', width:360},
+                    {templet:'#do', title: '操作'},
+                ]
+            ] //设置表头
+        });
+        table.on('tool(rank_list_table)',function (obj) {
+            let data = obj.data;
+            let layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if (layEvent === 'rankedit'){
+                let str = "<input type=\"text\" id=\"info_edit\" placeholder=\"权限信息\"  class=\"layui-input\" value=\""+data.info+"\"><br> <select id=\"rank_edit\" class=\"layui-select\">"
+                if (data.rank === 1){
+                    str+="                    <option value=\"1\" selected>普通用户</option>" +
+                        "                    <option value=\"2\">管理员</option>" +
+                        "                    <option value=\"3\">系统管理员</option>" +
+                        "                </select>";
+                }else if(data.rank === 2){
+                    str+="                    <option value=\"1\" >普通用户</option>" +
+                        "                    <option value=\"2\" selected>管理员</option>" +
+                        "                    <option value=\"3\">系统管理员</option>" +
+                        "                </select>";
+                }else{
+                    str+="                    <option value=\"1\" >普通用户</option>" +
+                        "                    <option value=\"2\">管理员</option>" +
+                        "                    <option value=\"3\" selected>系统管理员</option>" +
+                        "                </select>";
+                }
+                layer.confirm(str, {btn: ['保存', '取消'], title: "修改信息",area: ['400px', '300px']}, function () {
+                  let info =   $("#info_edit").val();
+                  let rank =   $("#rank_edit").val();
+                    if (!info){
+                        layer.msg("信息不能为空");
+                        return ;
+                    }
+                  $.ajax({
+                        url:'rank/update',
+                        method:'put',
+                        data:{
+                            id:data.id,
+                            info:info,
+                            rank:rank
+                        },
+                        success:function (data){
+                            if (data.success){
+                                reloadTable();
+                                layer.msg("更新成功");
+                            }else{
+                                layer.msg("更新失败");
+                            }
+                        }
+                  })
+                })
+            }
+            if (layEvent ==='rankdelete'){
+                layer.confirm('只有该权限未绑定任何人才可以删除，你确定删除吗？', {btn: ['确认', '取消'], title: "删除权限角色"}, function () {
+                    $.ajax({
+                        url:'rank/deleteById',
+                        method: 'delete',
+                        data:{
+                          id:data.id
+                        },
+                        success:function (data){
+                            if (data.success){
+                                reloadTable();
+                                layer.msg("删除成功");
+                            }else{
+                                layer.msg("删除失败,该权限角色可能仍然绑定着用户");
+                            }
+                        }
+                    })
+                });
+
+            }
+        })
+
+    });
+    function reloadTable(){
+        table.reload('rank_list', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+        }, 'data');
+    }
+    function addRank(){
+        let info =$("#info").val();
+        let rank  =$("#rank").val();
+        if (!info){
+            layer.msg("信息不能为空");
+        }
+        layer.confirm('你确定保存这个权限？', {btn: ['确认', '取消'], title: "权限角色保存"}, function () {
+            $.ajax({
+                url:'rank/add',
+                method: 'post',
+                data:{
+                    info:info,
+                    rank:rank
+                },
+                success:function (data){
+                    if (data.success){
+                        reloadTable();
+                        layer.msg("保存成功");
+                    }else{
+                        layer.msg("保存失败");
+                    }
+                }
+            })
+        });
+    }
+    function findUserByQuery(){
+        let query =$("#query").val();
+        if (!query){
+            layer.msg("参数为空");
+            return ;
+        }
+        $.ajax({
+            url:'user/getUserByQuery',
+            method:'get',
+            data:{
+                query:query
+            },
+            success:function (data){
+                let dom =$("#userRank")
+                dom.empty();
+                let arr = data.data.users;
+                if (arr.length===0){
+                    dom.append("<div>没有找到数据<div>")
+                }
+                for (let i = 0; i < arr.length; i++) {
+                    let r =arr[i].rank.rank===1?'普通用户':arr[i].rank.rank===2?'管理员':'系统管理员';
+                        dom.append('<tr>' +
+                        '                    <td>'+arr[i].name+'</td>' +
+                        '                    <td>'+arr[i].sno+'</td>' +
+                        '                    <td>'+arr[i].pn+'</td>' +
+                            '                    <td>'+arr[i].email+'</td>' +
+                            '                    <td>'+r+'</td>' +
+                        '                    <td>'+arr[i].rank.info+'</td>' +
+                        '                    <td>' +
+                        '                        <button class="layui-btn layui-btn-primary" onclick="updateRank('+arr[i].id+')">变更权限</button>' +
+                        '                    </td>' +
+                        '                </tr>')
+                }
+            }
+        })
+
+    }
+    function updateRank(id){
+        let str = "请选择权限角色:<select id=\"update_rank\" class=\"layui-select\">";
+        $.ajax({
+            url:'rank/loadAll',
+            method:'get',
+            async:false,
+            success:function (data){
+                let a = data.data.ranks;
+                for (let i = 0; i < a.length; i++) {
+                    console.log(a[i])
+                    let r =a[i].rank===1?'普通用户':a[i].rank===2?'管理员':'系统管理员';
+                    str+='<option value="'+a[i].id+'">'+a[i].info+'------'+r+'</option>';
+                }
+            }
+        })
+            str+='</select>';
+        layer.confirm(str, {btn: ['保存', '取消'], title: "变更权限角色",area: ['400px', '200px']}, function () {
+            let update_rank = $("#update_rank").val();
+            $.ajax({
+                url:'user/updateInfo',
+                method:'put',
+                data:{
+                    id:id,
+                    rankId:update_rank
+                },
+                success:function (data){
+                    if (data.success){
+                        layer.msg("修改成功");
+                    }else{
+                        layer.msg("修改失败");
+                    }
+                }
+            })
+        });
+    }
+</script>
+</html>

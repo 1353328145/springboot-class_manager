@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("user")
@@ -81,11 +82,16 @@ public class UserController {
         return Msg.success().add("count",userService.getCount());
     }
 
+    @GetMapping("getUserByQuery")
+    public Msg getUserByQuery(String query){
+        List<User> list = userService.queryByQuery(query);
+        return Msg.success().add("users",list);
+    }
 
     @PutMapping("updateInfo")
     public Msg updateInfo(User user){
+        System.out.println(user);
         int update = userService.update(user);
-        System.out.println(update);
         return update >0?Msg.success():Msg.fail();
     }
     @PutMapping("updatePassword")

@@ -129,7 +129,7 @@
                         '                        <div class="layui-timeline-content layui-text">' +
                         '                            <h3 class="layui-timeline-title">'+notices[i].createTime+'</h3>' +
                         '                            <p>' +
-                        '                                <img src="'+str+'" class="layui-nav-img" id="photo">&nbsp;&nbsp;'+notices[i].user.name+'<br><br>' +
+                        '                                <img src="'+str+'" class="layui-nav-img" id="photo">&nbsp;&nbsp;'+notices[i].user.name+'     <span class="rank">'+notices[i].user.rank.info+'</span><br><br>' +
                         '                                <span style="font-size: 20px; color: #4E5465;font-weight: bolder">'+notices[i].theme+'</span><br><br>' +
                         '                                <button type="button" class="layui-btn layui-btn-primary" onclick="openContent('+i+')">' +
                         '                                    <i class="layui-icon">&#xe622;</i> 查看详细内容' +
@@ -151,6 +151,14 @@
         font-size: 20px;
         color: #4E5465;
         font-family: "Arial Rounded MT Bold",serif;
+    }
+    .rank{
+        /*border: #4E5465 solid 1px;*/
+        /*border-radius: 5px;*/
+        margin-left: 10px;
+        font-size: 15px;
+        color: #4476A7;
+        font-weight: bolder;
     }
 </style>
 </html>

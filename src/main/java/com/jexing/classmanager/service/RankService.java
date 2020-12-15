@@ -25,7 +25,7 @@ public interface RankService {
      * @param rank 实例对象
      * @return 实例对象
      */
-    Rank insert(Rank rank);
+    int insert(Rank rank);
 
     /**
      * 修改数据
@@ -33,7 +33,7 @@ public interface RankService {
      * @param rank 实例对象
      * @return 实例对象
      */
-    Rank update(Rank rank);
+    int update(Rank rank);
 
     /**
      * 通过主键删除数据
@@ -43,4 +43,5 @@ public interface RankService {
      */
     boolean deleteById(Integer id);
 
+    List<Rank> queryAll();
 }

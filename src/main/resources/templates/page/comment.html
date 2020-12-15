@@ -14,7 +14,7 @@
     </div>
     <div class="layui-row">
         <div class="layui-col-md2">
-            <button onclick="sendComment()" class="layui-btn layui-btn-primary layui-btn-fluid" style="border-radius: 10px;height: 100%"><i class="layui-icon">&#xe611;发布</i></button>
+            <button onclick="sendComment()" class="layui-btn layui-btn-primary layui-btn-fluid" style="border-radius: 10px;height: 145px"><i class="layui-icon">&#xe611;发布</i></button>
         </div>
         <div class="layui-col-md10" style="background: white">
             <textarea id="comment" style="display: none;"></textarea>
@@ -49,7 +49,6 @@
             ,count: count
             ,limit: 6
             ,jump: function(obj, first) {
-                // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
                 //首次不执行
                 load(obj.curr)
             }
@@ -114,8 +113,7 @@
                 commentCache = arr;
                 for (let i = 0; i < arr.length; i++) {
                     let str = arr[i].fromUser.gender===1?'img/man.jpg':'img/woman.jpg';
-
-                    comments.append('<div class="layui-col-md3" style="margin-left: 20px;margin-top: 10px">' +
+                    comments.append('<div class="layui-row" style="margin-top: 10px">' +
                             '            <div class="layui-card">' +
                             '                <div class="layui-card-header">' +
                             '                    <img src="'+str+'" class="layui-nav-img">' +
@@ -127,6 +125,9 @@
                             '                   <button type="button" onclick="openComment('+i+')" class="layui-btn layui-btn-sm layui-btn-primary">' +
                             '                           <i class="layui-icon layui-icon-right">回复详情</i>' +
                             '                    </button>'+
+                            '<button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="addChild('+i+')">\n' +
+                            '  <i class="layui-icon">&#xe611;</i>\n' +
+                            '</button>' +
                             '                </div>' +
                             '            </div>' +
                             '        </div>');
@@ -145,21 +146,57 @@
             layer.msg("登录失效请重新登陆");
             return;
         }
-        $.ajax({
-            url:'comment/add',
-            method:'post',
-            data:{
-                fromId:uid,
-                content:content
-            },
-            success:function (data) {
-                if (data.success){
-                    load(1);
-                    layer.alert("提交成功")
-                } else{
-                    layer.alert("提交失败")
+        layer.confirm('确认提交你的评论？', {btn: ['确认', '取消'], title: "回复"}, function () {
+            $.ajax({
+                url:'comment/add',
+                method:'post',
+                data:{
+                    fromId:uid,
+                    content:content
+                },
+                success:function (data) {
+                    if (data.success){
+                        load(1);
+                        layer.alert("提交成功")
+                    } else{
+                        layer.alert("提交失败")
+                    }
                 }
+        });
+
+        });
+    }
+    function addChild(index){
+        let str = "<input type='text' placeholder='回复' class='layui-input' id='reply' style='border-radius: 10px;border: #9f9f9f solid 1px'>";
+        layer.confirm(str, {btn: ['回复', '取消'], title: "回复",area: ['400px', '200px']}, function () {
+            let reply = $("#reply").val();
+            let uid = window.sessionStorage.getItem("uid");
+            if (!reply) {
+                layer.msg('请输入回复', {icon: 2});
+                return;
             }
+            if (!uid){
+                layer.msg('登录失效', {icon: 2});
+                return;
+            }
+            $.ajax({
+                url:'commentChild/add',
+                method:'post',
+                data:{
+                    cid:commentCache[index].id,
+                    toId:commentCache[index].fromId,
+                    fromId: uid,
+                    content : reply
+                },
+                success:function (data){
+                    if (data.success){
+                        load(1);
+                        layer.alert("提交成功")
+                    } else{
+                        layer.alert("提交失败")
+                    }
+                }
+            })
         });
     }
 </script>

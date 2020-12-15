@@ -38,9 +38,8 @@ public class RankServiceImpl implements RankService {
      * @return 实例对象
      */
     @Override
-    public Rank insert(Rank rank) {
-        this.rankDao.insert(rank);
-        return rank;
+    public int insert(Rank rank) {
+        return  this.rankDao.insert(rank);
     }
 
     /**
@@ -50,9 +49,8 @@ public class RankServiceImpl implements RankService {
      * @return 实例对象
      */
     @Override
-    public Rank update(Rank rank) {
-        this.rankDao.update(rank);
-        return this.queryById(rank.getId());
+    public int update(Rank rank) {
+        return  this.rankDao.update(rank);
     }
 
     /**
@@ -64,5 +62,10 @@ public class RankServiceImpl implements RankService {
     @Override
     public boolean deleteById(Integer id) {
         return this.rankDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public List<Rank> queryAll() {
+        return rankDao.queryAll(new Rank());
     }
 }

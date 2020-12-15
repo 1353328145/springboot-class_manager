@@ -3,8 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <title>积分管理</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
 </head>
 <body>
-    积分管理
+    <div class="layui-container">
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote main_btn">
+                先搜索要加分或减分的学生
+            </blockquote>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md2">
+            </div>
+            <div class="layui-col-md4">
+                <input type="text" placeholder="输入用户名或者学号查找" class="layui-input" id="query">
+            </div>
+            <div class="layui-col-md6">
+                <button type="button" class="layui-btn layui-btn-primary" onclick="findUserByQuery()">
+                    <i class="layui-icon">&#xe669;</i>
+                </button>
+            </div>
+        </div>
+        <div class="layui-row" >
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>学号</th>
+                    <th>电话</th>
+                    <th>邮箱</th>
+                    <th>当前积分</th>
+                    <th>当前权限信息</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="userFind">
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-row">
+            <div class="layui-row">
+                <input placeholder="输入格式如:+100、-100、+200、-200" type="text" id="val" class="layui-input">
+            </div>
+            <hr>
+            <div class="layui-row">
+                <input placeholder="请输入加减分信息" type="text" id="info" class="layui-input">
+            </div>
+        </div>
+    </div>
 </body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script>
+    let $;
+    let layer;
+    layui.use(['form','layer','jquery'], function(){
+        $=layui.jquery;
+        layer = layui.layer;
+        let form = layui.form;
+    });
+    function findUserByQuery(){
+        let query =$("#query").val();
+        if (!query){
+            layer.msg("参数为空");
+            return ;
+        }
+        $.ajax({
+            url:'user/getUserByQuery',
+            method:'get',
+            data:{
+                query:query
+            },
+            success:function (data){
+                let dom =$("#userFind")
+                dom.empty();
+                let arr = data.data.users;
+                if (arr.length===0){
+                    dom.append("<div>没有找到数据<div>")
+                }
+                for (let i = 0; i < arr.length; i++) {
+                    let r =arr[i].rank.rank===1?'普通用户':arr[i].rank.rank===2?'管理员':'系统管理员';
+                    dom.append('<tr>' +
+                        '                    <td>'+arr[i].name+'</td>' +
+                        '                    <td>'+arr[i].sno+'</td>' +
+                        '                    <td>'+arr[i].pn+'</td>' +
+                        '                    <td>'+arr[i].email+'</td>' +
+                        '                    <td>'+arr[i].stars+'</td>' +
+                        '                    <td>'+arr[i].rank.info+'</td>' +
+                        '                    <td>' +
+                        '                        <button class="layui-btn layui-btn-primary" onclick="handleStar('+arr[i].id+')">积分变更</button>' +
+                        '                    </td>' +
+                        '                </tr>')
+                }
+            }
+        })
+
+    }
+
+    function handleStar(id){
+        let str = '<div class="layui-row">' +
+            '                <input placeholder="输入格式如:+100、-100、+200、-200" type="text" id="val" class="layui-input">' +
+            '            </div>' +
+            '            <hr>' +
+            '            <div class="layui-row">' +
+            '                <input placeholder="请输入加减分信息" type="text" id="info" class="layui-input">' +
+            '            </div>';
+        layer.confirm(str, {btn: ['变更', '取消'], title: "变更积分",area: ['400px', '300px']}, function () {
+            let val =$("#val").val();
+            let info = $("#info").val();
+            let reg = new RegExp("[+-][0-9]+");
+            let res = reg.test(val);
+            alert(val+"的匹配结果"+res);
+        })
+    }
+
+</script>
 </html>

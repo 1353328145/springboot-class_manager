@@ -12,17 +12,21 @@
         </div>
     </div>
     <div class="bottom">
-        <input type="text" placeholder="回复" class="layui-input" id="sendComment" style="border-radius: 10px;border: #9F9F9F solid 1px">
+        <input type="text" placeholder="回复" class="layui-input" id="reply_win" style="border-radius: 10px;border: #9F9F9F solid 1px">
     </div>
 </body>
 <script src="../../layui.js" charset="utf-8"></script>
 <script>
     let $;
     let childCache;
+    let layer;
     function child(d) {
         let comments= $("#comments");
         childCache = d;
-        console.log(childCache);
+        if (childCache.length===0){
+            comments.append('<h1>这里还没有评论</h1>');
+            return ;
+        }
         for (let i = 0; i < childCache.length; i++) {
             let a = childCache[i].fromUser.gender===1?'img/man.jpg':'img/woman.jpg';
             let b = childCache[i].toUser.gender===1?'img/man.jpg':'img/woman.jpg';
@@ -33,12 +37,41 @@
             comments.append(content).append('<br>').append(btn).append('<hr>');
         }
     }
-    layui.use(['jquery'], function(){
+    layui.use(['jquery','layer'], function(){
         $ = layui.jquery;
+        layer = layui.layer;
     });
     function addCC(cid,uid){
-        alert("父评论id" + cid);
-        alert("要回复者" + uid)
+        let reply =$("#reply_win").val();
+        let userid = window.sessionStorage.getItem("uid");
+        if (!reply) {
+            layer.msg('请输入回复', {icon: 2});
+            return;
+        }
+        if (!userid){
+            layer.msg('登录失效', {icon: 2});
+            return;
+        }
+        layer.confirm('确认提交你的评论？', {btn: ['确认', '取消'], title: "回复"}, function () {
+            $.ajax({
+                url:'commentChild/add',
+                method:'post',
+                data:{
+                    cid:cid,
+                    toId:uid,
+                    fromId: userid,
+                    content : reply
+                },
+                success:function (data){
+                    if (data.success){
+                        layer.msg("评论保存成功，请刷新页面")
+                    } else{
+                        layer.msg("保存失败")
+                    }
+                }
+        });
+
+        })
     }
 </script>
 <style>

@@ -7,6 +7,7 @@ import com.jexing.classmanager.dao.UserDao;
 import com.jexing.classmanager.entity.Comment;
 import com.jexing.classmanager.entity.CommentChild;
 import com.jexing.classmanager.entity.Notice;
+import com.jexing.classmanager.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,9 +29,9 @@ class ClassManagerApplicationTests {
     private CommentDao commentDao;
     @Test
     void contextLoads() {
-        List<Comment> list = commentDao.queryAllWithChild();
-        for (Comment comment : list) {
-
+        List<User> list = dao.queryByQuery("18031310133");
+        for (User user : list) {
+            System.out.println("********************"+user);
         }
     }
 

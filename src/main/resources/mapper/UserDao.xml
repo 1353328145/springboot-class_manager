@@ -82,6 +82,13 @@
     <select id="queryNameById" resultMap="UserMap">
         select id,name from user where id = #{id}
     </select>
+    <select id="queryCountByRank_id" resultType="java.lang.Integer">
+        select count(*) from user where rank_id = #{rank_id}
+    </select>
+
+    <select id="queryByQuery" resultMap="UserMap">
+        select u.*,r.info,r.`rank` from user u, `rank` r where (name = #{query} or sno = #{query}) and u.rank_id = r.id
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

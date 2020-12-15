@@ -88,4 +88,14 @@ public class UserServiceImpl implements UserService {
         user.setPassword(new Md5Hash(user.getPassword()).toHex());
         return userDao.update(user);
     }
+
+    @Override
+    public int queryCountByRank_id(Integer rank_id) {
+        return userDao.queryCountByRank_id(rank_id);
+    }
+
+    @Override
+    public List<User> queryByQuery(String query) {
+        return userDao.queryByQuery(query);
+    }
 }

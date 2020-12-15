@@ -67,4 +67,8 @@ public interface UserDao {
     User queryNameById(Integer id);
 
     int queryCount();
+
+    int queryCountByRank_id(Integer rank_id);
+
+    List<User> queryByQuery(String query);
 }

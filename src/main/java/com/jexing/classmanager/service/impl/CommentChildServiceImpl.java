@@ -5,6 +5,8 @@ import com.jexing.classmanager.entity.CommentChild;
 import com.jexing.classmanager.service.CommentChildService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,9 +32,9 @@ public class CommentChildServiceImpl implements CommentChildService {
      * @return 实例对象
      */
     @Override
-    public CommentChild insert(CommentChild commentChild) {
-        this.commentChildDao.insert(commentChild);
-        return commentChild;
+    public int insert(CommentChild commentChild) {
+        commentChild.setCreateTime(new Date());
+        return this.commentChildDao.insert(commentChild);
     }
 
     /**

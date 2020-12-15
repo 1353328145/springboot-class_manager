@@ -61,4 +61,8 @@ public interface UserService {
     int getCount();
 
     int updatePassword(User user);
+
+    int queryCountByRank_id(Integer rank_id);
+
+    List<User> queryByQuery(String query);
 }
