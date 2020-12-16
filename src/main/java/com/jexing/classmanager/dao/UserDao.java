@@ -71,4 +71,9 @@ public interface UserDao {
     int queryCountByRank_id(Integer rank_id);
 
     List<User> queryByQuery(String query);
+
+
+    int increaseStar(Integer val,Integer id);
+
+    int decreaseStar(Integer val,Integer id);
 }

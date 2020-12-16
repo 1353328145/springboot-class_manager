@@ -32,27 +32,15 @@ public class LogServiceImpl implements LogService {
     }
 
     /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    @Override
-    public List<Log> queryAllByLimit(int offset, int limit) {
-        return this.logDao.queryAllByLimit(offset, limit);
-    }
-
-    /**
      * 新增数据
      *
      * @param log 实例对象
      * @return 实例对象
      */
     @Override
-    public Log insert(Log log) {
-        this.logDao.insert(log);
-        return log;
+    public int insert(Log log) {
+        return   this.logDao.insert(log);
+
     }
 
     /**
@@ -76,5 +64,17 @@ public class LogServiceImpl implements LogService {
     @Override
     public boolean deleteById(Integer id) {
         return this.logDao.deleteById(id) > 0;
+    }
+
+    @Override
+    public List<Log> queryByUser(Integer id) {
+        Log log = new Log();
+        log.setToId(id);
+        return logDao.queryAll(log);
+    }
+
+    @Override
+    public List<Log> quertAll() {
+        return logDao.queryAll(new Log());
     }
 }

@@ -46,4 +46,6 @@ public interface CommentService {
     List<Comment> loadAll();
 
     int getCount();
+
+    List<Comment> queryByFromId(Integer uid);
 }

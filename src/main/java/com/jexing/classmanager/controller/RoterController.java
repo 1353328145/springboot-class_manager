@@ -58,4 +58,7 @@ public class RoterController {
     @RequestMapping("rank_control")
     @RequiresRoles("root")
     public String rank_control(){return "page/rank";}
+
+    @RequestMapping("commentDel")
+    public String commentManagement(){return "page/commentManagement";}
 }

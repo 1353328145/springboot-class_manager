@@ -58,4 +58,5 @@ public interface CommentChildDao {
      */
     int deleteById(Integer id);
 
+    int deleteByCid(Integer cid);
 }

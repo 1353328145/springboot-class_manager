@@ -3,17 +3,17 @@ package com.jexing.classmanager.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jexing.classmanager.entity.Comment;
+import com.jexing.classmanager.entity.CommentChild;
 import com.jexing.classmanager.entity.Msg;
 import com.jexing.classmanager.entity.Notice;
 import com.jexing.classmanager.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (Comment)表控制层
@@ -47,5 +47,24 @@ public class CommentController {
     public Msg add(Comment comment){
         if (comment.getContent()==null||comment.getFromId()==null){return Msg.fail();}
         return commentService.insert(comment)>0?Msg.success():Msg.fail();
+    }
+
+    @GetMapping("getByUser")
+    public Map<String,Object> getByUser(Integer uid, Integer page, Integer limit){
+        PageHelper.startPage(page,limit);
+        List<Comment> logs =  commentService.queryByFromId(uid);
+        PageInfo<Comment> info=new PageInfo<>(logs);
+        Map<String,Object> map=new HashMap<>();
+        map.put("data",info.getList());
+        map.put("count",info.getTotal());
+        map.put("msg","查询成功");
+        map.put("code",0);
+        return map;
+    }
+
+    @DeleteMapping("deleteById")
+    public Msg deleteById(Integer id){
+        if (id==null){return Msg.fail();}
+        return commentService.deleteById(id)?Msg.success():Msg.fail();
     }
 }

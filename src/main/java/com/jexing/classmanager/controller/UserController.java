@@ -10,6 +10,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -94,8 +95,14 @@ public class UserController {
         int update = userService.update(user);
         return update >0?Msg.success():Msg.fail();
     }
+
     @PutMapping("updatePassword")
     public Msg updatePassword(User user){
         return userService.updatePassword(user)>0?Msg.success():Msg.fail();
+    }
+
+    @PutMapping("updateStar")
+    public Msg updateStar(String val,String info,Integer fromId,Integer toId){
+        return userService.handleStar(val,info,fromId,toId)?Msg.success():Msg.fail();
     }
 }

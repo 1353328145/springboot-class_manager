@@ -1,5 +1,7 @@
 package com.jexing.classmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,7 +11,6 @@ import java.util.Date;
  * @since 2020-12-09 12:49:53
  */
 public class Log implements Serializable {
-    private static final long serialVersionUID = -20154700674943945L;
 
     private Integer id;
 
@@ -22,9 +23,28 @@ public class Log implements Serializable {
     private Integer fromId;
 
     private Integer toId;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    private User fromUser;
+
+    private User toUser;
+
+    public User getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(User fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    public User getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(User toUser) {
+        this.toUser = toUser;
+    }
 
     public Integer getId() {
         return id;
@@ -92,6 +112,8 @@ public class Log implements Serializable {
                 ", fromId=" + fromId +
                 ", toId=" + toId +
                 ", createTime=" + createTime +
+                ", fromUser=" + fromUser +
+                ", toUser=" + toUser +
                 '}';
     }
 }

@@ -59,4 +59,17 @@ public class CommentChildServiceImpl implements CommentChildService {
     public boolean deleteById(Integer id) {
         return this.commentChildDao.deleteById(id) > 0;
     }
+
+    @Override
+    public List<CommentChild> queryByFromId(Integer uid) {
+        CommentChild commentChild = new CommentChild();
+        commentChild.setFromId(uid);
+        return this.commentChildDao.queryAll(commentChild);
+    }
+
+    @Override
+    public boolean deleteByCid(Integer cid) {
+        return this.commentChildDao.deleteByCid(cid) > 0;
+
+    }
 }

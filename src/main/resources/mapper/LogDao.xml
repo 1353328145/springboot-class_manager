@@ -3,13 +3,19 @@
 <mapper namespace="com.jexing.classmanager.dao.LogDao">
 
     <resultMap type="com.jexing.classmanager.entity.Log" id="LogMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="info" column="info" jdbcType="VARCHAR"/>
-        <result property="flag" column="flag" jdbcType="OTHER"/>
-        <result property="val" column="val" jdbcType="INTEGER"/>
-        <result property="fromId" column="from_id" jdbcType="INTEGER"/>
-        <result property="toId" column="to_id" jdbcType="INTEGER"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id"/>
+        <result property="info" column="info" />
+        <result property="flag" column="flag" />
+        <result property="val" column="val" />
+        <result property="fromId" column="from_id" />
+        <result property="toId" column="to_id" />
+        <result property="createTime" column="create_time"/>
+        <association property="fromUser"  javaType="com.jexing.classmanager.entity.User">
+            <result property="name" column="fname"/>
+        </association>
+        <association property="toUser"  javaType="com.jexing.classmanager.entity.User">
+            <result property="name" column="tname"/>
+        </association>
     </resultMap>
 
     <!--查询单个-->
@@ -25,25 +31,17 @@
         where id = #{id}
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="LogMap">
-        select id,
-               info,
-               flag,
-               val,
-               from_id,
-               to_id,
-               create_time
-        from class_manager.log
-        limit #{offset}, #{limit}
-    </select>
-
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="LogMap">
         select
-        id, info, flag, val, from_id, to_id, create_time
-        from class_manager.log
-        <where>
+        l.*,
+        u1.name fname,
+        u2.name tname
+
+        from log l, user u1,user u2
+
+        where  u1.id = l.from_id and u2.id = l.to_id
+
             <if test="id != null">
                 and id = #{id}
             </if>
@@ -65,7 +63,9 @@
             <if test="createTime != null">
                 and create_time = #{createTime}
             </if>
-        </where>
+
+        order by create_time desc
+
     </select>
 
     <!--新增所有列-->

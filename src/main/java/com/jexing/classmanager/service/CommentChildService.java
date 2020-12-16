@@ -43,4 +43,7 @@ public interface CommentChildService {
      */
     boolean deleteById(Integer id);
 
+    List<CommentChild> queryByFromId(Integer uid);
+
+    boolean deleteByCid(Integer cid);
 }

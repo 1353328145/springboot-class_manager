@@ -56,6 +56,8 @@
                 and create_time = #{createTime}
             </if>
         </where>
+
+        order by create_time desc
     </select>
     <select id="queryByCid" resultMap="CommentChildMap">
       select cc.*,
@@ -103,6 +105,11 @@
         delete
         from class_manager.comment_child
         where id = #{id}
+    </delete>
+    <delete id="deleteByCid">
+        delete
+        from class_manager.comment_child
+        where cid = #{cid}
     </delete>
 
 </mapper>

@@ -65,4 +65,6 @@ public interface UserService {
     int queryCountByRank_id(Integer rank_id);
 
     List<User> queryByQuery(String query);
+
+    boolean handleStar(String val,String info,Integer fromId,Integer toId);
 }

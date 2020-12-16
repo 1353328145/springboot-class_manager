@@ -127,7 +127,14 @@
         </set>
         where id = #{id}
     </update>
-
+    <update id="increaseStar">
+        update class_manager.user
+        set stars = stars + #{val} where id = #{id}
+    </update>
+    <update id="decreaseStar">
+         update class_manager.user
+          set stars = stars - #{val} where id = #{id}
+    </update>
     <!--通过主键删除-->
     <delete id="deleteById">
         delete

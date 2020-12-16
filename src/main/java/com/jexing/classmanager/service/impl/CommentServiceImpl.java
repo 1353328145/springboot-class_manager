@@ -1,10 +1,13 @@
 package com.jexing.classmanager.service.impl;
 
+import com.jexing.classmanager.dao.CommentChildDao;
 import com.jexing.classmanager.dao.CommentDao;
 import com.jexing.classmanager.entity.Comment;
+import com.jexing.classmanager.entity.CommentChild;
 import com.jexing.classmanager.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -20,6 +23,9 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
 
     private CommentDao commentDao;
+
+    @Autowired
+    private CommentChildDao commentChildDao;
 
     /**
      * 通过ID查询单条数据
@@ -63,8 +69,9 @@ public class CommentServiceImpl implements CommentService {
      * @return 是否成功
      */
     @Override
+    @Transactional(rollbackFor = { Exception.class })
     public boolean deleteById(Integer id) {
-        return this.commentDao.deleteById(id) > 0;
+        return this.commentDao.deleteById(id) > 0 && commentChildDao.deleteByCid(id) > 0;
     }
 
     @Override
@@ -75,5 +82,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public int getCount() {
         return commentDao.queryCount();
+    }
+
+    @Override
+    public List<Comment> queryByFromId(Integer uid) {
+        Comment comment = new Comment();
+        comment.setFromId(uid);
+        return this.commentDao.queryAll(comment);
     }
 }

@@ -30,16 +30,18 @@
         table.render({
             elem:'#logTable'
             ,id:'logs'
-            ,url:'#'
+            ,url:'log/getLogByUser/'+window.sessionStorage.getItem("uid")
             ,height: 500 //容器高度
             ,method: 'get'
             ,page: true
-            ,where :{
-                query: $("#queryTheme").val(),
-            }
             ,cols: [
                 [
                     {field: 'createTime', title: '时间', width:160},
+                    {templet: '<div>{{ d.flag===1?"加分":"减分" }}</div>', title: '加分/减分', width:160},
+                    {field: 'info', title: '原因', width:160},
+                    {field: 'val', title: '数值', width:160},
+                    {templet: '<div>{{ d.fromUser.name }}</div>', title: '处理者' },
+                    {templet: '<div>{{ d.toUser.name }}</div>', title: '操作对象' },
                 ]
             ] //设置表头
         });

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>评论回复管理</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
+</head>
+<body>
+    <div class="layui-container">
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote main_btn">
+                留言删除
+            </blockquote>
+        </div>
+        <div class="layui-row">
+            <table id="comment" lay-filter="comment_tab"></table>
+        </div>
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote main_btn">
+                我的回复列表
+            </blockquote>
+        </div>
+        <div class="layui-row">
+            <table id="reply" lay-filter="reply_tab"></table>
+        </div>
+    </div>
+</body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script type="text/html" id="cc_del">
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="cc_delete">
+            <i class="layui-icon">&#xe640;</i>
+        </button>
+    </div>
+</script>
+<script type="text/html" id="c_del">
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="c_delete">
+            <i class="layui-icon">&#xe640;</i>
+        </button>
+    </div>
+</script>
+<script>
+    let $;
+    let table;
+    layui.use(['jquery','table'], function(){
+        $=layui.jquery;
+        table = layui.table;
+        //留言table
+        table.render({
+            elem:'#comment'
+            ,id:'comment'
+            ,url:'comment/getByUser'
+            ,height: 500 //容器高度
+            ,method: 'get'
+            ,page: true
+            ,where:{
+                uid:window.sessionStorage.getItem("uid")
+            }
+            ,cols: [
+                [
+                    {field: 'createTime', title: '时间', width:160},
+                    {templet: '<div>{{ d.content }}</div>', title: '内容'},
+                    {templet: '#c_del', title: '操作' },
+                ]
+            ] //设置表头
+        });
+        table.on('tool(comment_tab)',function (obj) {
+            let data = obj.data;
+            let layEvent = obj.event;
+            if (layEvent === 'c_delete') {
+                layer.confirm('你确定删除吗', {btn: ['删除', '取消'], title: "回复删除"}, function () {
+                    $.ajax({
+                        url:'comment/deleteById',
+                        method:'delete',
+                        data:{
+                            id:data.id
+                        },
+                        success:function (data) {
+                            if (data.success){
+                                reload_c();
+                                layer.alert("删除成功")
+                            } else{
+                                layer.alert("删除失败")
+                            }
+                        }
+                    })
+                });
+            }
+        });
+
+        //回复table
+        table.render({
+            elem:'#reply'
+            ,id:'reply'
+            ,url:'commentChild/getByUser'
+            ,height: 500 //容器高度
+            ,method: 'get'
+            ,page: true
+            ,where:{
+                uid:window.sessionStorage.getItem("uid")
+            }
+            ,cols: [
+                [
+                    {field: 'createTime', title: '时间', width:160},
+                    {templet: '<div>{{ d.content }}</div>', title: '内容'},
+                    {templet: '#cc_del', title: '操作' },
+                ]
+            ] //设置表头
+        });
+        table.on('tool(reply_tab)',function (obj) {
+            let data = obj.data;
+            let layEvent = obj.event;
+            if (layEvent === 'cc_delete') {
+                layer.confirm('你确定删除吗', {btn: ['删除', '取消'], title: "回复删除"}, function () {
+                    $.ajax({
+                        url:'commentChild/deleteById',
+                        method:'delete',
+                        data:{
+                            id:data.id
+                        },
+                        success:function (data) {
+                            if (data.success){
+                                reload_cc();
+                                layer.alert("删除成功")
+                            } else{
+                                layer.alert("删除失败")
+                            }
+                        }
+                    })
+                });
+            }
+        });
+    });
+
+    function reload_cc() {
+        //执行重载
+        table.reload('reply', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+                uid: window.sessionStorage.getItem("uid")
+            }
+        }, 'data');
+    }
+    function reload_c() {
+        //执行重载
+        table.reload('comment', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+                uid: window.sessionStorage.getItem("uid")
+            }
+        }, 'data');
+    }
+
+</script>
+</html>

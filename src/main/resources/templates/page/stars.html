@@ -41,15 +41,6 @@
                 </tbody>
             </table>
         </div>
-        <div class="layui-row">
-            <div class="layui-row">
-                <input placeholder="输入格式如:+100、-100、+200、-200" type="text" id="val" class="layui-input">
-            </div>
-            <hr>
-            <div class="layui-row">
-                <input placeholder="请输入加减分信息" type="text" id="info" class="layui-input">
-            </div>
-        </div>
     </div>
 </body>
 <script src="../../layui.js" charset="utf-8"></script>
@@ -100,19 +91,47 @@
     }
 
     function handleStar(id){
-        let str = '<div class="layui-row">' +
-            '                <input placeholder="输入格式如:+100、-100、+200、-200" type="text" id="val" class="layui-input">' +
-            '            </div>' +
-            '            <hr>' +
-            '            <div class="layui-row">' +
-            '                <input placeholder="请输入加减分信息" type="text" id="info" class="layui-input">' +
-            '            </div>';
+        let str = '<div class="layui-row">\n' +
+            '            <div class="layui-row">\n' +
+            '                <input placeholder="输入格式如:+100、-100、+200、-200" type="text" id="valFormat" class="layui-input">\n' +
+            '            </div>\n' +
+            '            <hr>\n' +
+            '            <div class="layui-row">\n' +
+            '                <input placeholder="请输入加减分信息" type="text" id="info" class="layui-input">\n' +
+            '            </div>\n' +
+            '        </div>';
         layer.confirm(str, {btn: ['变更', '取消'], title: "变更积分",area: ['400px', '300px']}, function () {
-            let val =$("#val").val();
+            let val =$("#valFormat").val();
             let info = $("#info").val();
+            let fromId=window.sessionStorage.getItem("uid");
+            let toId = id;
             let reg = new RegExp("[+-][0-9]+");
-            let res = reg.test(val);
-            alert(val+"的匹配结果"+res);
+            if(reg.test(val)){
+                if (!info){
+                    layer.msg("数据不能为空");
+                    return;
+                }
+                $.ajax({
+                    url:'user/updateStar',
+                    method: 'put',
+                    data: {
+                        val:val,
+                        info:info,
+                        fromId:fromId,
+                        toId:toId
+                    },
+                    success:function (data) {
+                        if (data.success){
+                            layer.alert("修改成功");
+                        } else{
+                            layer.alert("修改失败");
+                        }
+                    }
+                });
+            }else{
+                layer.msg("数据格式输入不正确")
+            }
+
         })
     }
 
