@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scholarship</title>
+    <link rel="stylesheet" href="../../css/layui.css" media="all">
+</head>
+<body>
+    <div class="layui-container">
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote main_btn">
+                不知道奖学金管理怎么做，简单做个积分排名
+            </blockquote>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md2">
+                <button type="button" class="layui-btn layui-btn-primary" onclick="reloadUsers()">
+                    <i class="layui-icon">&#xe669;</i>
+                </button>
+            </div>
+            <div class="layui-col-md4">
+                <input type="text" placeholder="请输入用户名称或学号" class="layui-input" id="queryParameter">
+            </div>
+            <div class="layui-col-md6"></div>
+        </div>
+        <div class="layui-row">
+            <table id="user_tab" lay-filter="users"></table>
+        </div>
+    </div>
+</body>
+<script src="../../layui.js" charset="utf-8"></script>
+<script>
+    let $;
+    let layer;
+    let table;
+    layui.use(['layer','jquery','table'], function(){
+        table = layui.table;
+        $ = layui.jquery;
+        layer =layui.layer;
+        table.render({
+            elem:'#user_tab'
+            ,id:'user_tab'
+            ,url:'user/getUserByQueryPage'
+            ,height: 500 //容器高度
+            ,method: 'get'
+            ,page: true
+            ,where :{
+                query: $("#queryParameter").val(),
+            }
+            ,cols: [
+                [
+                    {field: 'name', title: '姓名', width:160},
+                    {field: 'sno', title: '学号', width:160},
+                    {templet: '<div>{{ d.gender === 1?"男生":"女生" }}</div>', title: '性别', width:160},
+                    {field: 'pn', title: '手机号码', width:160},
+                    {field: 'email', title: '邮箱', width:160},
+                    {templet: '<div>{{ d.rank.info }}</div>', title: '身份信息',width:160},
+                    {field: 'stars', title: '积分' , sort: true},
+                ]
+            ] //设置表头
+        });
+    });
+
+    function reloadUsers() {
+        let query = $("#queryParameter").val();
+        //执行重载
+        table.reload('user_tab', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+                query: query
+            }
+        }, 'data');
+    }
+
+</script>
+</html>

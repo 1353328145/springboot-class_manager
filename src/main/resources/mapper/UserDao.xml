@@ -87,7 +87,10 @@
     </select>
 
     <select id="queryByQuery" resultMap="UserMap">
-        select u.*,r.info,r.`rank` from user u, `rank` r where (name = #{query} or sno = #{query}) and u.rank_id = r.id
+        select u.*,r.info,r.`rank` from user u, `rank` r
+        where
+        (name like concat('%',#{query},'%') or sno like concat('%',#{query},'%') )
+        and u.rank_id = r.id
     </select>
 
     <!--新增所有列-->

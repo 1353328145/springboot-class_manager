@@ -61,4 +61,8 @@ public class RoterController {
 
     @RequestMapping("commentDel")
     public String commentManagement(){return "page/commentManagement";}
+
+    @RequestMapping("scholarship")
+    @RequiresRoles("root")
+    public String scholarship(){return "page/scholarship";}
 }

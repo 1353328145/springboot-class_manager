@@ -1,6 +1,9 @@
 package com.jexing.classmanager.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.jexing.classmanager.entity.Msg;
+import com.jexing.classmanager.entity.Notice;
 import com.jexing.classmanager.entity.User;
 import com.jexing.classmanager.service.UserService;
 import org.apache.shiro.SecurityUtils;
@@ -14,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("user")
@@ -24,18 +29,6 @@ public class UserController {
      */
     @Autowired
     private UserService userService;
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("selectOne")
-    public User selectOne(Integer id) {
-        return this.userService.queryById(id);
-    }
-
 
     /**
      * 登录
@@ -105,4 +98,18 @@ public class UserController {
     public Msg updateStar(String val,String info,Integer fromId,Integer toId){
         return userService.handleStar(val,info,fromId,toId)?Msg.success():Msg.fail();
     }
+
+    @GetMapping("getUserByQueryPage")
+    public Map<String,Object> getUserByQueryBlurry(String query,Integer page,Integer limit){
+        PageHelper.startPage(page,limit);
+        List<User> list = userService.queryByQuery(query);
+        PageInfo<User> info=new PageInfo<>(list);
+        Map<String,Object> map=new HashMap<>();
+        map.put("data",info.getList());
+        map.put("count",info.getTotal());
+        map.put("msg","查询成功");
+        map.put("code",0);
+        return map;
+    }
+
 }
